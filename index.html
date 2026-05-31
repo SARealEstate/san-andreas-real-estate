@@ -287,7 +287,7 @@
   <div class="hero-eyebrow">Bienvenue chez</div>
   <h1>San Andreas<br><em>Real Estate</em></h1>
   <div class="hero-divider"><span></span><i class="ti ti-diamond" aria-hidden="true" style="font-size:9px;color:var(--gold);"></i><span></span></div>
-  <p class="hero-sub">L'excellence immobilière au cœur de San Andreas. Propriétés d'exception à la vente et à la location.</p>
+  <p class="hero-sub">L'excellence immobilière au cœur de San Andreas. Propriétés à la vente et à la location.</p>
   <div class="hero-stats">
     <div class="hero-stat"><div class="num" id="stat-total">—</div><div class="lbl">Biens</div></div>
     <div class="hero-stat"><div class="num" id="stat-sale">—</div><div class="lbl">Vente</div></div>
@@ -421,7 +421,7 @@
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Prix ($)</label><input type="text" class="form-input" id="f-price" placeholder="1,250,000"><span class="form-hint" id="price-hint">Pour la vente</span></div>
-      <div class="form-group"><label class="form-label">Commission agence</label><input type="text" class="form-input" id="f-commission" placeholder="ex: 5% ou $50,000"></div>
+      <div class="form-group"><label class="form-label">Commission agence</label><input type="text" class="form-input" id="f-commission" placeholder="ex:$50,000"></div>
     </div>
 
     <div class="form-section-title">Caractéristiques</div>
@@ -885,6 +885,21 @@
   function editProp(id){openModal(id);}
 
   loadProperties();
+
+  function formatMoneyInput(input) {
+  let value = input.value.replace(/[^0-9]/g, "");
+  if (!value) {
+    input.value = "";
+    return;
+  }
+  input.value = "$" + Number(value).toLocaleString("en-US");
+}
+
+const commissionInput = document.getElementById("f-commission");
+
+commissionInput.addEventListener("input", function () {
+  formatMoneyInput(this);
+});
 </script>
 </body>
 </html>
