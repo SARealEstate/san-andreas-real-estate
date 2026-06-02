@@ -503,7 +503,7 @@
 
     <div class="form-section-title">Description & visibilité</div>
     <div class="form-row full"><div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="f-desc" placeholder="Décrivez la propriété..."></textarea></div></div>
-    <div class="form-checkbox-row"><input type="checkbox" id="f-featured"><label for="f-featured">Copropriété - Sous conditions</label></div>
+    <div class="form-checkbox-row"><input type="checkbox" id="f-copro"><label for="f-copro">Copropriété - Sous conditions</label></div>
     <div class="form-checkbox-row"><input type="checkbox" id="f-featured"><label for="f-featured">⭐ Mettre en vedette</label></div>
     <div class="form-checkbox-row"><input type="checkbox" id="f-visible" checked><label for="f-visible">👁 Visible sur le site</label></div>
 
@@ -859,6 +859,7 @@ function openModal(id=null){
   document.getElementById('f-helipad').checked=p?!!p.helipad:false;
   document.getElementById('f-desc').value=p?p.desc:'';
   document.getElementById('f-featured').checked=p?p.featured:false;
+  document.getElementById('f-copro').checked=p?p.featured:false;
   document.getElementById('f-visible').checked=p?p.visible:true;
   const photoWrap=document.getElementById('photo-inputs');photoWrap.innerHTML='';
   const existingPhotos=p?(p.photos&&p.photos.length?p.photos:(p.img?[p.img]:[])):[]; 
@@ -890,7 +891,7 @@ async function saveProp(){
     i2v:document.getElementById('f-i2v').value.trim()||'—',i2l:document.getElementById('f-i2l-display').textContent||'Chambres',
     bathrooms:document.getElementById('f-bathrooms').value.trim(),floors:document.getElementById('f-floors').value.trim(),offices:document.getElementById('f-offices').value.trim(),
     parking:document.getElementById('f-parking').value,pool_type:document.getElementById('f-pool').value,garden:document.getElementById('f-garden').checked,helipad:document.getElementById('f-helipad').checked,
-    desc:document.getElementById('f-desc').value.trim(),photos,tags:allTags,featured:document.getElementById('f-featured').checked,visible:document.getElementById('f-visible').checked};
+    desc:document.getElementById('f-desc').value.trim(),photos,tags:allTags,featured:document.getElementById('f-featured').checked,copro:document.getElementById('f-copro').checked,visible:document.getElementById('f-visible').checked};
   if(editingId){const existing=properties.find(p=>p.id===editingId);data.id=editingId;data.ref=existing.type!==type?genRef(type,properties.filter(p=>p.id!==editingId)):existing.ref;}
   else data.ref=genRef(type,properties);
   const ok=await upsertProperty(data);
