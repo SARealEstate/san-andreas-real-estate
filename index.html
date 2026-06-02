@@ -948,12 +948,18 @@ loadProperties();
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".prop-ref, .detail-ref-pill").forEach(el => {
     el.style.cursor = "pointer";
-    el.classList.add("copied");
-    setTimeout(() => el.classList.remove("copied"), 800);
+
     el.addEventListener("click", async () => {
+      const text = el.textContent.trim();
+
       try {
-        await navigator.clipboard.writeText(el.textContent.trim());
-        console.log("copié :", el.textContent.trim());
+        await navigator.clipboard.writeText(text);
+        console.log("copié :", text);
+
+        // 👉 effet visuel AU MOMENT DU CLIC
+        el.classList.add("copied");
+        setTimeout(() => el.classList.remove("copied"), 800);
+
       } catch (e) {
         console.error("clipboard error", e);
       }
