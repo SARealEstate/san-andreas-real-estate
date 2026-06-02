@@ -172,6 +172,7 @@
     .detail-price{font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:var(--gold);font-weight:300;}
     .detail-price-lbl{font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--white-dim);margin-bottom:4px;}
     .detail-commission-val{font-size:1.4rem;color:var(--gold-light);font-family:'Cormorant Garamond',serif;}
+    
 
     /* DISCORD */
     .discord-section{background:var(--black-2);border-top:1px solid rgba(201,168,76,0.07);border-bottom:1px solid rgba(201,168,76,0.07);text-align:center;padding:4.5rem 2rem;}
@@ -709,7 +710,7 @@ function openDetail(id){
   document.getElementById('d-title').textContent=p.name;
   document.getElementById('d-loc').innerHTML=`<i class="ti ti-map-pin"></i>${p.location}`;
   document.getElementById('d-ref').textContent=p.ref;
-  document.getElementById('d-type-badge').innerHTML=`<span class="tag tag-type">${p.property_type||'Bien'}</span>`;
+  document.getElementById('d-type-badge').innerHTML =`${isNew(p)?'<span class="tag tag-new">Nouveau</span>':''}<span class="tag tag-type">${p.property_type||'Bien'}</span>`;
 
   const specs=[];
   if(p.i1v)specs.push({icon:'ti-home-2',val:p.i1v,lbl:p.i1l||'Pièces'});
