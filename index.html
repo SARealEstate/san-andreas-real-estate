@@ -348,7 +348,7 @@
       <button class="filter-btn" onclick="filterProps('sale',this)">Vente</button>
       <button class="filter-btn" onclick="filterProps('rent',this)">Location</button>
       <button class="filter-btn" onclick="filterProps('featured',this)">En vedette</button>
-      <button class="filter-btn" onclick="filterProps('copro',this)">Copropriété - Sous conditions</button>
+
     </div>
     <div class="props-grid" id="props-grid">
       <div class="loading-state" style="grid-column:1/-1;"><i class="ti ti-loader-2"></i><p style="font-size:0.7rem;">Chargement…</p></div>
@@ -549,7 +549,7 @@ let detailCarousel={index:0,timer:null,total:0};
 
 // ── SUPABASE ──
 async function loadProperties(){
-  const{data,error}=await supa.from('properties').select('*').order('featured',{ascending:false}).order('copro',{ascending:false}).order('created_at',{ascending:false});
+  const{data,error}=await supa.from('properties').select('*').order('featured',{ascending:false}).order('created_at',{ascending:false});
   if(error){console.error(error);showToast('Erreur chargement','error');return;}
   properties=data.map(p=>({...p,img:p.img_url||'',desc:p.description||'',createdAt:new Date(p.created_at).getTime(),photos:p.photos||[],tags:p.tags||[]}));
   renderPublic();
@@ -861,7 +861,7 @@ function openModal(id=null){
   document.getElementById('f-helipad').checked=p?!!p.helipad:false;
   document.getElementById('f-desc').value=p?p.desc:'';
   document.getElementById('f-featured').checked=p?p.featured:false;
-  document.getElementById('f-copro').checked=p?p.featured:false;
+  document.getElementById('f-copro').checked=p?p.copro:false;
   document.getElementById('f-visible').checked=p?p.visible:true;
   const photoWrap=document.getElementById('photo-inputs');photoWrap.innerHTML='';
   const existingPhotos=p?(p.photos&&p.photos.length?p.photos:(p.img?[p.img]:[])):[]; 
