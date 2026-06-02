@@ -967,8 +967,9 @@ document.addEventListener("DOMContentLoaded", () => {
     el.style.cursor = "pointer";
 
     el.addEventListener("click", async (e) => {
-  e.preventDefault();      // 👈 bloque les liens <a>
-  e.stopPropagation();     // 👈 bloque les parents
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation(); // 👈 IMPORTANT
 
   const text = el.textContent.trim();
 
@@ -983,6 +984,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } catch (err) {
     console.error(err);
   }
+}, true); // 👈 IMPORTANT (capture phase)
 });
   });
 
