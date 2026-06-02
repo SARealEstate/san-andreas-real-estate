@@ -415,10 +415,11 @@
   <div class="admin-body">
     <div class="pw-screen" id="pw-screen">
       <h2>Accès Administration</h2>
-      <p>Entrez le mot de passe pour continuer</p>
+      <p>Connectez-vous pour continuer</p>
+      <input type="email" class="pw-input" id="pw-email" placeholder="Email" style="margin-bottom:0.5rem;" onkeydown="if(event.key==='Enter')checkPw()">
       <input type="password" class="pw-input" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPw()">
       <div class="pw-error" id="pw-error"></div>
-      <button class="btn-unlock" onclick="checkPw()"><i class="ti ti-lock-open" style="font-size:11px;margin-right:4px;"></i>Déverrouiller</button>
+      <button class="btn-unlock" id="btn-unlock" onclick="checkPw()"><i class="ti ti-lock-open" style="font-size:11px;margin-right:4px;"></i>Se connecter</button>
     </div>
     <div class="admin-panel" id="admin-panel">
       <div class="admin-topbar">
@@ -541,7 +542,6 @@
 const SUPA_URL='https://jjuysrgpthzjnyzxeqzp.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqdXlzcmdwdGh6am55enhlcXpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyMTc4NDgsImV4cCI6MjA5NDc5Mzg0OH0.16q3SfMkTpY2h1o1oQWL7rWW-wSXzkBbxYzjkmX1WeI';
 const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
-const ADMIN_PW='sare2024';
 const SEVEN_DAYS=7*24*60*60*1000;
 const parkingIcon={'Garage':'ti-car-garage','Garage souterrain':'ti-car-garage','Garage/Parking commun':'ti-parking','Parking public':'ti-parking','Stationnement extérieur':'ti-ban'};
 const PRESET_EQUIP=[
@@ -794,9 +794,26 @@ function filterProps(f,btn){currentFilter=f;document.querySelectorAll('.filter-b
 function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
 
 // ── ADMIN ──
-function openAdmin(){document.getElementById('admin-overlay').classList.add('open');if(adminUnlocked){document.getElementById('pw-screen').style.display='none';document.getElementById('admin-panel').classList.add('visible');renderAdmin();}}
-function closeAdmin(){document.getElementById('admin-overlay').classList.remove('open');}
-function checkPw(){const v=document.getElementById('pw-input').value;if(v===ADMIN_PW){adminUnlocked=true;document.getElementById('pw-screen').style.display='none';document.getElementById('admin-panel').classList.add('visible');document.getElementById('pw-error').textContent='';renderAdmin();}else{document.getElementById('pw-error').textContent='Mot de passe incorrect';document.getElementById('pw-input').value='';}}
+async function openAdmin(){
+  document.getElementById('admin-overlay').classList.add('open');
+  const {data:{session}}=await supa.auth.getSession();
+  if(session){adminUnlocked=true;document.getElementById('pw-screen').style.display='none';document.getElementById('admin-panel').classList.add('visible');renderAdmin();}
+}
+function closeAdmin(){
+  document.getElementById('admin-overlay').classList.remove('open');
+  if(adminUnlocked){supa.auth.signOut();adminUnlocked=false;document.getElementById('pw-screen').style.display='flex';document.getElementById('admin-panel').classList.remove('visible');document.getElementById('pw-input').value='';document.getElementById('pw-email').value='';}
+}
+async function checkPw(){
+  const email=document.getElementById('pw-email').value.trim();
+  const pw=document.getElementById('pw-input').value;
+  const btn=document.getElementById('btn-unlock');
+  if(!email||!pw){document.getElementById('pw-error').textContent='Email et mot de passe requis';return;}
+  btn.disabled=true;btn.textContent='Connexion…';
+  const{error}=await supa.auth.signInWithPassword({email,password:pw});
+  btn.disabled=false;btn.innerHTML='<i class="ti ti-lock-open" style="font-size:11px;margin-right:4px;"></i>Se connecter';
+  if(error){document.getElementById('pw-error').textContent='Identifiants incorrects';document.getElementById('pw-input').value='';}
+  else{adminUnlocked=true;document.getElementById('pw-screen').style.display='none';document.getElementById('admin-panel').classList.add('visible');document.getElementById('pw-error').textContent='';renderAdmin();}
+}
 
 function renderAdmin(){
   const tbody=document.getElementById('admin-tbody');
