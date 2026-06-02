@@ -89,15 +89,12 @@
     .tag-new {
   position: relative;
   display: inline-block;
-  padding: 4px 10px;
-  background: gold;
-  color: #111;
-  font-weight: bold;
+  background: var(--gold);
+  color: #0a0a0a;
   overflow: hidden;
-  border-radius: 6px;
 }
 
-/* effet brillant */
+/* reflet brillant */
 .tag-new::after {
   content: "";
   position: absolute;
@@ -112,17 +109,7 @@
     transparent 100%
   );
   transform: skewX(-20deg);
-}
-
-/* animation */
-.tag-new::after {
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.35) 50%,
-    transparent 100%
-  );
-  animation: shine 3s infinite;
+  animation: shine 2.5s infinite;
 }
 
 @keyframes shine {
