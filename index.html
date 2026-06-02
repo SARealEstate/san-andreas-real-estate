@@ -662,7 +662,7 @@ function renderPublic(){
         <div class="prop-tags-overlay">
           ${p.featured?'<span class="tag tag-featured">⭐ Vedette</span>':''}
           ${isNew(p)?'<span class="tag tag-new">Nouveau</span>':''}
-          ${p.copro?'<span class="tag tag-copro">Copropriété</span>':''}
+          ${p.copro?'<span class="tag tag-type">Copropriété</span>':''}
           <span class="tag tag-type">${p.type==='sale'?'Vente':'Location'}</span>
         </div>
         ${hasMultiple?`
@@ -725,7 +725,7 @@ function openDetail(id){
 
   document.getElementById('d-title').textContent=p.name;
   document.getElementById('d-loc').innerHTML=`<i class="ti ti-map-pin"></i>${p.location}`;
-  document.getElementById('d-type-badge').innerHTML =`${isNew(p)?'<span class="tag tag-new">Nouveau</span>':''}${p.copro?'<span class="tag tag-copro">Copropriété</span>':''}<span class="tag tag-type">${p.property_type||'Bien'}</span>`;
+  document.getElementById('d-type-badge').innerHTML =`${isNew(p)?'<span class="tag tag-new">Nouveau</span>':''}${p.copro?'<span class="tag tag-type">Copropriété</span>':''}<span class="tag tag-type">${p.property_type||'Bien'}</span>`;
   document.getElementById('d-ref').textContent=p.ref;
 
   const specs=[];
