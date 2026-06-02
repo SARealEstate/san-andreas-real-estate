@@ -967,7 +967,8 @@ document.addEventListener("DOMContentLoaded", () => {
     el.style.cursor = "pointer";
 
     el.addEventListener("click", async (e) => {
-  e.stopPropagation(); // 👈 empêche l'ouverture du détail
+  e.preventDefault();      // 👈 bloque les liens <a>
+  e.stopPropagation();     // 👈 bloque les parents
 
   const text = el.textContent.trim();
 
