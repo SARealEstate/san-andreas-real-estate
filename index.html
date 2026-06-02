@@ -939,17 +939,23 @@ loadProperties();
   else{initParticles();}
 })();
 
+</script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".prop-ref, .detail-ref-pill").forEach(el => {
     el.style.cursor = "pointer";
 
-    el.addEventListener("click", () => {
-      navigator.clipboard.writeText(el.textContent.trim());
+    el.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(el.textContent.trim());
+        console.log("copié :", el.textContent.trim());
+      } catch (e) {
+        console.error("clipboard error", e);
+      }
     });
   });
 });
-
 </script>
+  
 </body>
 </html>
