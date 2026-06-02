@@ -183,6 +183,8 @@
     .prop-ref:hover,
     .detail-ref-pill:hover {background: rgba(201,168,76,0.12);border-radius: 6px;}
     .copied {background: rgba(46, 204, 113, 0.15) !important;color: #2ecc71 !important;border-radius: 6px;padding: 0.18rem 0.55rem;transition: all 0.2s ease;}
+    .copy-toast {position: fixed;bottom: 20px;left: 50%;transform: translateX(-50%) translateY(20px);background: rgba(0,0,0,0.85);color: #fff;padding: 10px 16px;border-radius: 8px;font-size: 0.75rem;opacity: 0;pointer-events: none;transition: all 0.25s ease;z-index: 9999;}
+    .copy-toast.show {opacity: 1;transform: translateX(-50%) translateY(0);}
 
     /* DISCORD */
     .discord-section{background:var(--black-2);border-top:1px solid rgba(201,168,76,0.07);border-bottom:1px solid rgba(201,168,76,0.07);text-align:center;padding:4.5rem 2rem;}
@@ -944,8 +946,23 @@ loadProperties();
 })();
 
 </script>
-<script>
+  <script>
 document.addEventListener("DOMContentLoaded", () => {
+
+  // création du toast une seule fois
+  const toast = document.createElement("div");
+  toast.className = "copy-toast";
+  document.body.appendChild(toast);
+
+  function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 1200);
+  }
+
   document.querySelectorAll(".prop-ref, .detail-ref-pill").forEach(el => {
     el.style.cursor = "pointer";
 
@@ -954,17 +971,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         await navigator.clipboard.writeText(text);
-        console.log("copié :", text);
 
-        // 👉 effet visuel AU MOMENT DU CLIC
         el.classList.add("copied");
         setTimeout(() => el.classList.remove("copied"), 800);
 
+        showToast("✔ Copié dans le presse-papier");
+
       } catch (e) {
         console.error("clipboard error", e);
+        showToast("❌ Erreur de copie");
       }
     });
   });
+
 });
 </script>
   
