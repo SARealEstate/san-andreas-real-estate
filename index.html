@@ -903,6 +903,7 @@ async function saveProp(){
 async function deleteProp(id){if(!confirm('Supprimer ce bien définitivement ?'))return;const ok=await deletePropertyDB(id);if(ok){await loadProperties();renderAdmin();showToast('Bien supprimé');}}
 async function toggleVisible(id){const p=properties.find(x=>x.id===id);const ok=await updateField(id,{visible:!p.visible});if(ok){await loadProperties();renderAdmin();}}
 async function toggleFeatured(id){const p=properties.find(x=>x.id===id);const ok=await updateField(id,{featured:!p.featured});if(ok){await loadProperties();renderAdmin();renderPublic();}}
+async function togglecopro(id){const p=properties.find(x=>x.id===id);const ok=await updateField(id,{copro:!p.copro});if(ok){await loadProperties();renderAdmin();renderPublic();}}
 function editProp(id){openModal(id);}
 
 loadProperties();
