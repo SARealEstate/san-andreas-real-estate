@@ -946,10 +946,9 @@ loadProperties();
 })();
 
 </script>
-  <script>
+<script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  // création du toast une seule fois
   const toast = document.createElement("div");
   toast.className = "copy-toast";
   document.body.appendChild(toast);
@@ -967,25 +966,25 @@ document.addEventListener("DOMContentLoaded", () => {
     el.style.cursor = "pointer";
 
     el.addEventListener("click", async (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  e.stopImmediatePropagation(); // 👈 IMPORTANT
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
 
-  const text = el.textContent.trim();
+      const text = el.textContent.trim();
 
-  try {
-    await navigator.clipboard.writeText(text);
+      try {
+        await navigator.clipboard.writeText(text);
 
-    el.classList.add("copied");
-    setTimeout(() => el.classList.remove("copied"), 800);
+        el.classList.add("copied");
+        setTimeout(() => el.classList.remove("copied"), 800);
 
-    showToast("✔ Copié dans le presse-papier");
+        showToast("✔ Copié dans le presse-papier");
 
-  } catch (err) {
-    console.error(err);
-  }
-} true); // 👈 IMPORTANT (capture phase)
-});
+      } catch (err) {
+        console.error(err);
+        showToast("❌ Erreur copie");
+      }
+    }, true);
   });
 
 });
