@@ -962,33 +962,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1200);
   }
 
-  document.querySelectorAll(".prop-ref, .detail-ref-pill").forEach(el => {
-    el.style.cursor = "pointer";
+  document.addEventListener("click", async (e) => {
+    const refEl = e.target.closest(".prop-ref, .detail-ref-pill");
+    if (!refEl) return;
 
-    el.addEventListener("click", async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
 
-      const text = el.textContent.trim();
+    const text = refEl.textContent.trim();
 
-      try {
-        await navigator.clipboard.writeText(text);
+    try {
+      await navigator.clipboard.writeText(text);
 
-        el.classList.add("copied");
-        setTimeout(() => el.classList.remove("copied"), 800);
+      refEl.classList.add("copied");
+      setTimeout(() => refEl.classList.remove("copied"), 800);
 
-        showToast("✔ Copié dans le presse-papier");
+      showToast("✔ Copié dans le presse-papier");
 
-      } catch (err) {
-        console.error(err);
-        showToast("❌ Erreur copie");
-      }
-    }, true);
-  });
+    } catch (err) {
+      console.error(err);
+    }
+  }, true);
 
 });
-</script>
-  
+</script>  
 </body>
 </html>
