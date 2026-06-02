@@ -90,6 +90,7 @@
     .tag-new::after {content: "";position: absolute;top: 0;left: -75%;width: 50%;height: 100%;background: linear-gradient(120deg,transparent 0%,rgba(255, 255, 255, 0.7) 50%,transparent 100%);transform: skewX(-20deg);animation: shine 2.5s infinite;}
     @keyframes shine {0% {left: -75%;}100% {left: 125%;}}
     .tag-featured{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.45);color:var(--gold);}
+    .tag-copro{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.45);color:var(--gold);}
     .tag-type{background:var(--gold);color:#0a0a0a;}
     .prop-ref{position:absolute;bottom:0.65rem;right:0.65rem;font-size:0.48rem;letter-spacing:0.14em;color:var(--white-dim);background:rgba(10,10,10,0.78);backdrop-filter:blur(6px);padding:0.2rem 0.55rem;border-radius:50px;border:1px solid rgba(245,245,240,0.09);z-index:3;}
     .photo-count{position:absolute;bottom:0.65rem;left:0.65rem;font-size:0.48rem;color:var(--white-dim);background:rgba(10,10,10,0.78);backdrop-filter:blur(6px);padding:0.2rem 0.55rem;border-radius:50px;border:1px solid rgba(245,245,240,0.09);display:flex;align-items:center;gap:4px;z-index:3;}
@@ -347,6 +348,7 @@
       <button class="filter-btn" onclick="filterProps('sale',this)">Vente</button>
       <button class="filter-btn" onclick="filterProps('rent',this)">Location</button>
       <button class="filter-btn" onclick="filterProps('featured',this)">En vedette</button>
+      <button class="filter-btn" onclick="filterProps('copro',this)">Copropriété - Sous conditions</button>
     </div>
     <div class="props-grid" id="props-grid">
       <div class="loading-state" style="grid-column:1/-1;"><i class="ti ti-loader-2"></i><p style="font-size:0.7rem;">Chargement…</p></div>
@@ -547,13 +549,13 @@ let detailCarousel={index:0,timer:null,total:0};
 
 // ── SUPABASE ──
 async function loadProperties(){
-  const{data,error}=await supa.from('properties').select('*').order('featured',{ascending:false}).order('created_at',{ascending:false});
+  const{data,error}=await supa.from('properties').select('*').order('featured',{ascending:false}).order('copro',{ascending:false}).order('created_at',{ascending:false});
   if(error){console.error(error);showToast('Erreur chargement','error');return;}
   properties=data.map(p=>({...p,img:p.img_url||'',desc:p.description||'',createdAt:new Date(p.created_at).getTime(),photos:p.photos||[],tags:p.tags||[]}));
   renderPublic();
 }
 async function upsertProperty(p){
-  const payload={ref:p.ref,name:p.name,location:p.location,type:p.type,price:p.price,commission:p.commission,i1v:p.i1v,i1l:p.i1l,i2v:p.i2v,i2l:p.i2l,bathrooms:p.bathrooms,floors:p.floors,offices:p.offices,parking:p.parking,pool_type:p.pool_type,garden:p.garden,helipad:p.helipad,property_type:p.property_type,description:p.desc,img_url:p.photos&&p.photos[0]||'',photos:p.photos,featured:p.featured,visible:p.visible,tags:p.tags};
+  const payload={ref:p.ref,name:p.name,location:p.location,type:p.type,price:p.price,commission:p.commission,i1v:p.i1v,i1l:p.i1l,i2v:p.i2v,i2l:p.i2l,bathrooms:p.bathrooms,floors:p.floors,offices:p.offices,parking:p.parking,pool_type:p.pool_type,garden:p.garden,helipad:p.helipad,property_type:p.property_type,description:p.desc,img_url:p.photos&&p.photos[0]||'',photos:p.photos,featured:p.featured,copro:p.copro,visible:p.visible,tags:p.tags};
   if(p.id&&typeof p.id==='number')payload.id=p.id;
   const{error}=await supa.from('properties').upsert(payload);
   if(error){console.error(error);showToast('Erreur sauvegarde','error');return false;}
