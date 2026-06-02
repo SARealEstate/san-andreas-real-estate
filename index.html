@@ -86,7 +86,47 @@
     .card-dot.active{background:var(--gold);width:12px;border-radius:3px;}
     .prop-tags-overlay{position:absolute;top:0.7rem;left:0.7rem;display:flex;gap:0.35rem;flex-wrap:wrap;z-index:3;}
     .tag{font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.26rem 0.6rem;font-weight:600;border-radius:50px;}
-    .tag-new{background:var(--gold);color:#0a0a0a;}
+    .tag-new {
+  position: relative;
+  display: inline-block;
+  padding: 4px 10px;
+  background: gold;
+  color: #111;
+  font-weight: bold;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+/* effet brillant */
+.tag-new::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+}
+
+/* animation */
+.tag-new::after {
+  animation: shine 2.5s infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  100% {
+    left: 125%;
+  }
+}
     .tag-featured{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.45);color:var(--gold);}
     .tag-type{background:var(--gold);color:#0a0a0a;}
     .prop-ref{position:absolute;bottom:0.65rem;right:0.65rem;font-size:0.48rem;letter-spacing:0.14em;color:var(--white-dim);background:rgba(10,10,10,0.78);backdrop-filter:blur(6px);padding:0.2rem 0.55rem;border-radius:50px;border:1px solid rgba(245,245,240,0.09);z-index:3;}
