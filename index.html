@@ -715,8 +715,8 @@ function openDetail(id){
 
   document.getElementById('d-title').textContent=p.name;
   document.getElementById('d-loc').innerHTML=`<i class="ti ti-map-pin"></i>${p.location}`;
-  document.getElementById('d-ref').textContent=p.ref;
   document.getElementById('d-type-badge').innerHTML =`${isNew(p)?'<span class="tag tag-new">Nouveau</span>':''}<span class="tag tag-type">${p.property_type||'Bien'}</span>`;
+  document.getElementById('d-ref').textContent=p.ref;
 
   const specs=[];
   if(p.i1v)specs.push({icon:'ti-home-2',val:p.i1v,lbl:p.i1l||'Pièces'});
