@@ -523,6 +523,8 @@ const PRESET_EQUIP=[
 ];
 
 let properties=[],editingId=null,currentFilter='all',adminUnlocked=false,customTags=[];
+let currentPage=1;
+const ITEMS_PER_PAGE=5;
 
 // ── CAROUSEL STATE ──
 // cardCarousels: { propId: { index, timer, photos } }
@@ -624,13 +626,17 @@ function renderPublic(){
   else if(currentFilter==='rent')vis=vis.filter(p=>p.type==='rent');
   else if(currentFilter==='featured')vis=vis.filter(p=>p.featured);
   const sorted=getSorted(vis);
+  const totalPages=Math.ceil(sorted.length/ITEMS_PER_PAGE);
+  if(currentPage>totalPages&&totalPages>0) currentPage=1;
+  const start=(currentPage-1)*ITEMS_PER_PAGE;
+  const paginatedProps=sorted.slice(start,start+ITEMS_PER_PAGE);
   const allVis=properties.filter(p=>p.visible);
   document.getElementById('stat-total').textContent=allVis.length;
   document.getElementById('stat-sale').textContent=allVis.filter(p=>p.type==='sale').length;
   document.getElementById('stat-rent').textContent=allVis.filter(p=>p.type==='rent').length;
   if(!sorted.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><i class="ti ti-building-skyscraper"></i><p style="font-size:0.7rem;">Aucune propriété disponible</p></div>';return;}
 
-  grid.innerHTML=sorted.map((p,i)=>{
+  grid.innerHTML=paginatedProps.map((p,i)=>{
     const photos=p.photos&&p.photos.length?p.photos:(p.img?[p.img]:[]);
     cardCarousels[p.id]={index:0,timer:null,photos};
     const hasMultiple=photos.length>1;
@@ -675,10 +681,24 @@ function renderPublic(){
   }).join('');
 
   // Start carousels
-  sorted.forEach(p=>{
+  paginatedProps.forEach(p=>{
     if(cardCarousels[p.id]&&cardCarousels[p.id].photos.length>1)startCardCarousel(p.id);
   });
+
+  renderPagination(sorted.length);
 }
+
+function renderPagination(totalItems){
+ const pagination=document.getElementById('pagination');
+ const totalPages=Math.ceil(totalItems/ITEMS_PER_PAGE);
+ if(totalPages<=1){pagination.classList.add('hidden'); pagination.innerHTML=''; return;}
+ pagination.classList.remove('hidden');
+ let html=`<button class="pg-btn" ${currentPage===1?'disabled':''} onclick="changePage(${currentPage-1})">‹</button>`;
+ for(let i=1;i<=totalPages;i++){html+=`<button class="pg-btn ${i===currentPage?'active':''}" onclick="changePage(${i})">${i}</button>`;}
+ html+=`<button class="pg-btn" ${currentPage===totalPages?'disabled':''} onclick="changePage(${currentPage+1})">›</button>`;
+ pagination.innerHTML=html;
+}
+function changePage(page){currentPage=page; renderPublic(); document.getElementById('properties')?.scrollIntoView({behavior:'smooth'});}
 
 // ── DETAIL ──
 function openDetail(id){
@@ -752,7 +772,7 @@ function closeDetail(){
 }
 document.getElementById('detail-backdrop').addEventListener('click',function(e){if(e.target===this)closeDetail();});
 
-function filterProps(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderPublic();}
+function filterProps(f,btn){currentFilter=f;currentPage=1;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderPublic();}
 function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
 
 // ── ADMIN ──
