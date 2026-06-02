@@ -940,20 +940,15 @@ loadProperties();
 })();
 
 <script>
-function copierTexte(texte) {
-  navigator.clipboard.writeText(texte)
-    .then(() => console.log("Copié :", texte))
-    .catch(err => console.error("Erreur copie :", err));
-}
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".prop-ref, .detail-ref-pill").forEach(el => {
+    el.style.cursor = "pointer";
 
-document.querySelectorAll(".prop-ref, .detail-ref-pill").forEach(el => {
-  el.style.cursor = "pointer";
-
-  el.addEventListener("click", () => {
-    copierTexte(el.textContent.trim());
+    el.addEventListener("click", () => {
+      navigator.clipboard.writeText(el.textContent.trim());
+    });
   });
 });
-</script>
 
 </script>
 </body>
