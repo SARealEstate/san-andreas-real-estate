@@ -116,7 +116,13 @@
 
 /* animation */
 .tag-new::after {
-  animation: shine 2.5s infinite;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%
+  );
+  animation: shine 3s infinite;
 }
 
 @keyframes shine {
