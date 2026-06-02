@@ -938,6 +938,28 @@ loadProperties();
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initParticles);}
   else{initParticles();}
 })();
+
+
+</script>
+<script>
+document.querySelectorAll(".ref").forEach(el => {
+  el.style.cursor = "pointer";
+
+  el.addEventListener("click", () => {
+    const ref = el.getAttribute("d-ref");
+
+    navigator.clipboard.writeText(ref)
+      .then(() => {
+        console.log("Copié :", ref);
+        // optionnel : feedback visuel
+        el.classList.add("copied");
+        setTimeout(() => el.classList.remove("copied"), 800);
+      })
+      .catch(err => {
+        console.error("Erreur copie :", err);
+      });
+  });
+});
 </script>
 </body>
 </html>
