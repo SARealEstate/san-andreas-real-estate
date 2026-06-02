@@ -457,28 +457,47 @@
     <div class="form-section-title">Caractéristiques</div>
     <div class="form-row triple">
       <div class="form-group">
-        <label class="form-label">Info 1</label>
-        <input type="text" class="form-input" id="f-i1v" placeholder="5">
-        <div class="sublabel-row">
-          <span class="sublabel-static" id="f-i1l-display">Pièces</span>
-          <span class="sublabel-edit-btn" onclick="toggleSublabel('i1l')">✏ modifier</span>
+        <label class="form-label">
+          <span id="f-i1l-display">Pièces</span>
+          <span class="form-label-edit" onclick="toggleSublabel('i1l')">✏ modifier</span>
           <input type="text" class="sublabel-input" id="f-i1l" value="Pièces" style="display:none;" onblur="saveSublabel('i1l')">
-        </div>
+        </label>
+        <input type="text" class="form-input" id="f-i1v" placeholder="5">
       </div>
       <div class="form-group">
-        <label class="form-label">Info 2</label>
-        <input type="text" class="form-input" id="f-i2v" placeholder="3">
-        <div class="sublabel-row">
-          <span class="sublabel-static" id="f-i2l-display">Chambres</span>
-          <span class="sublabel-edit-btn" onclick="toggleSublabel('i2l')">✏ modifier</span>
+        <label class="form-label">
+          <span id="f-i2l-display">Chambres</span>
+          <span class="form-label-edit" onclick="toggleSublabel('i2l')">✏ modifier</span>
           <input type="text" class="sublabel-input" id="f-i2l" value="Chambres" style="display:none;" onblur="saveSublabel('i2l')">
-        </div>
+        </label>
+        <input type="text" class="form-input" id="f-i2v" placeholder="3">
       </div>
-      <div class="form-group"><label class="form-label">Salles de bains</label><input type="text" class="form-input" id="f-bathrooms" placeholder="2"></div>
+      <div class="form-group">
+        <label class="form-label">
+          <span id="f-bathroomsl-display">Salles de bains</span>
+          <span class="form-label-edit" onclick="toggleSublabel('bathroomsl')">✏ modifier</span>
+          <input type="text" class="sublabel-input" id="f-bathroomsl" value="Salles de bains" style="display:none;" onblur="saveSublabel('bathroomsl')">
+        </label>
+        <input type="text" class="form-input" id="f-bathrooms" placeholder="2">
+      </div>
     </div>
     <div class="form-row triple">
-      <div class="form-group"><label class="form-label">Étage / Niveaux</label><input type="text" class="form-input" id="f-floors" placeholder="ex: 2 niveaux"></div>
-      <div class="form-group"><label class="form-label">Bureaux</label><input type="text" class="form-input" id="f-offices" placeholder="0"></div>
+      <div class="form-group">
+        <label class="form-label">
+          <span id="f-floorsl-display">Étage / Niveaux</span>
+          <span class="form-label-edit" onclick="toggleSublabel('floorsl')">✏ modifier</span>
+          <input type="text" class="sublabel-input" id="f-floorsl" value="Étage / Niveaux" style="display:none;" onblur="saveSublabel('floorsl')">
+        </label>
+        <input type="text" class="form-input" id="f-floors" placeholder="ex: 2 niveaux">
+      </div>
+      <div class="form-group">
+        <label class="form-label">
+          <span id="f-officesl-display">Bureaux</span>
+          <span class="form-label-edit" onclick="toggleSublabel('officesl')">✏ modifier</span>
+          <input type="text" class="sublabel-input" id="f-officesl" value="Bureaux" style="display:none;" onblur="saveSublabel('officesl')">
+        </label>
+        <input type="text" class="form-input" id="f-offices" placeholder="0">
+      </div>
       <div class="form-group"><label class="form-label">Stationnement</label><select class="form-select" id="f-parking"><option value="Garage">Garage</option><option value="Garage souterrain">Garage souterrain</option><option value="Garage/Parking commun">Garage/Parking commun</option><option value="Parking public">Parking public</option><option value="Stationnement extérieur">Stationnement extérieur</option></select></div>
     </div>
     <div class="form-row">
@@ -555,7 +574,7 @@ async function loadProperties(){
   renderPublic();
 }
 async function upsertProperty(p){
-  const payload={ref:p.ref,name:p.name,location:p.location,type:p.type,price:p.price,commission:p.commission,i1v:p.i1v,i1l:p.i1l,i2v:p.i2v,i2l:p.i2l,bathrooms:p.bathrooms,floors:p.floors,offices:p.offices,parking:p.parking,pool_type:p.pool_type,garden:p.garden,helipad:p.helipad,property_type:p.property_type,description:p.desc,img_url:p.photos&&p.photos[0]||'',photos:p.photos,featured:p.featured,copro:p.copro,visible:p.visible,tags:p.tags};
+  const payload={ref:p.ref,name:p.name,location:p.location,type:p.type,price:p.price,commission:p.commission,i1v:p.i1v,i1l:p.i1l,i2v:p.i2v,i2l:p.i2l,bathrooms:p.bathrooms,bathroomsl:p.bathroomsl,floors:p.floors,floorsl:p.floorsl,offices:p.offices,officesl:p.officesl,parking:p.parking,pool_type:p.pool_type,garden:p.garden,helipad:p.helipad,property_type:p.property_type,description:p.desc,img_url:p.photos&&p.photos[0]||'',photos:p.photos,featured:p.featured,copro:p.copro,visible:p.visible,tags:p.tags};
   if(p.id&&typeof p.id==='number')payload.id=p.id;
   const{error}=await supa.from('properties').upsert(payload);
   if(error){console.error(error);showToast('Erreur sauvegarde','error');return false;}
@@ -731,9 +750,9 @@ function openDetail(id){
   const specs=[];
   if(p.i1v)specs.push({icon:'ti-home-2',val:p.i1v,lbl:p.i1l||'Pièces'});
   if(p.i2v)specs.push({icon:'ti-bed',val:p.i2v,lbl:p.i2l||'Chambres'});
-  if(p.bathrooms)specs.push({icon:'ti-bath',val:p.bathrooms,lbl:'Salle de bains'});
-  if(p.floors)specs.push({icon:'ti-stairs',val:p.floors,lbl:'Étage / Niveaux'});
-  if(p.offices&&p.offices!=='0')specs.push({icon:'ti-briefcase',val:p.offices,lbl:'Bureaux'});
+  if(p.bathrooms)specs.push({icon:'ti-bath',val:p.bathrooms,lbl:p.bathroomsl||'Salles de bains'});
+  if(p.floors)specs.push({icon:'ti-stairs',val:p.floors,lbl:p.floorsl||'Étage / Niveaux'});
+  if(p.offices&&p.offices!=='0')specs.push({icon:'ti-briefcase',val:p.offices,lbl:p.officesl||'Bureaux'});
   if(p.parking)specs.push({icon:parkingIcon[p.parking]||'ti-car',val:'',lbl:p.parking,icon_only:true});
   if(p.pool_type&&p.pool_type!=='Aucune')specs.push({icon:'ti-ripple',val:'',lbl:p.pool_type,icon_only:true});
   if(p.garden)specs.push({icon:'ti-trees',val:'',lbl:'Jardin',icon_only:true});
@@ -854,8 +873,14 @@ function openModal(id=null){
   const i2l=p?p.i2l||'Chambres':'Chambres';
   document.getElementById('f-i2l').value=i2l;document.getElementById('f-i2l-display').textContent=i2l;document.getElementById('f-i2l').style.display='none';
   document.getElementById('f-bathrooms').value=p?p.bathrooms||'':'';
+  const bathroomsl=p?p.bathroomsl||'Salles de bains':'Salles de bains';
+  document.getElementById('f-bathroomsl').value=bathroomsl;document.getElementById('f-bathroomsl-display').textContent=bathroomsl;document.getElementById('f-bathroomsl').style.display='none';
   document.getElementById('f-floors').value=p?p.floors||'':'';
+  const floorsl=p?p.floorsl||'Étage / Niveaux':'Étage / Niveaux';
+  document.getElementById('f-floorsl').value=floorsl;document.getElementById('f-floorsl-display').textContent=floorsl;document.getElementById('f-floorsl').style.display='none';
   document.getElementById('f-offices').value=p?p.offices||'':'';
+  const officesl=p?p.officesl||'Bureaux':'Bureaux';
+  document.getElementById('f-officesl').value=officesl;document.getElementById('f-officesl-display').textContent=officesl;document.getElementById('f-officesl').style.display='none';
   document.getElementById('f-parking').value=p?p.parking||'Garage':'Garage';
   document.getElementById('f-pool').value=p?p.pool_type||'Aucune':'Aucune';
   document.getElementById('f-garden').checked=p?!!p.garden:false;
@@ -892,7 +917,7 @@ async function saveProp(){
   const data={name,location:document.getElementById('f-location').value.trim(),type,property_type:document.getElementById('f-property-type').value,price,commission:document.getElementById('f-commission').value.trim(),
     i1v:document.getElementById('f-i1v').value.trim()||'—',i1l:document.getElementById('f-i1l-display').textContent||'Pièces',
     i2v:document.getElementById('f-i2v').value.trim()||'—',i2l:document.getElementById('f-i2l-display').textContent||'Chambres',
-    bathrooms:document.getElementById('f-bathrooms').value.trim(),floors:document.getElementById('f-floors').value.trim(),offices:document.getElementById('f-offices').value.trim(),
+    bathrooms:document.getElementById('f-bathrooms').value.trim(),bathroomsl:document.getElementById('f-bathroomsl-display').textContent||'Salles de bains',floors:document.getElementById('f-floors').value.trim(),floorsl:document.getElementById('f-floorsl-display').textContent||'Étage / Niveaux',offices:document.getElementById('f-offices').value.trim(),officesl:document.getElementById('f-officesl-display').textContent||'Bureaux',
     parking:document.getElementById('f-parking').value,pool_type:document.getElementById('f-pool').value,garden:document.getElementById('f-garden').checked,helipad:document.getElementById('f-helipad').checked,
     desc:document.getElementById('f-desc').value.trim(),photos,tags:allTags,featured:document.getElementById('f-featured').checked,copro:document.getElementById('f-copro').checked,visible:document.getElementById('f-visible').checked};
   if(editingId){const existing=properties.find(p=>p.id===editingId);data.id=editingId;data.ref=existing.type!==type?genRef(type,properties.filter(p=>p.id!==editingId)):existing.ref;}
