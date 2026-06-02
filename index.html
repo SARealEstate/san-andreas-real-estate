@@ -160,6 +160,10 @@
     .detail-loc{font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--white-dim);display:flex;align-items:center;gap:0.3rem;}
     .detail-loc i{color:var(--gold);font-size:11px;}
     .detail-ref-pill{font-size:0.48rem;letter-spacing:0.12em;color:var(--gold);background:rgba(201,168,76,0.09);border:1px solid rgba(201,168,76,0.18);padding:0.18rem 0.55rem;border-radius:50px;}
+    .copied {
+    color: #2ecc71;
+    transition: 0.2s;
+    }
     .specs-section{margin-bottom:1.5rem;}
     .specs-title{font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}
     .specs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:0.5rem;}
@@ -944,7 +948,8 @@ loadProperties();
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".prop-ref, .detail-ref-pill").forEach(el => {
     el.style.cursor = "pointer";
-
+    el.classList.add("copied");
+    setTimeout(() => el.classList.remove("copied"), 800);
     el.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(el.textContent.trim());
