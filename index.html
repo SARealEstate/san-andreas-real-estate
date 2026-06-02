@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -8,25 +7,22 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     :root{
       --black:#0a0a0a;--black-2:#141414;--black-3:#1c1c1c;--black-4:#242424;
       --gold:#c9a84c;--gold-light:#e2c97e;--gold-dim:rgba(201,168,76,0.15);
-      --white:#f5f5f0;--white-dim:rgba(245,245,240,0.55);--white-faint:rgba(245,245,240,0.07);
+      --white:#f5f5f0;--white-dim:rgba(245,245,240,0.55);
       --radius:16px;--radius-sm:10px;--radius-xs:7px;
     }
     body{font-family:'Montserrat',sans-serif;background:var(--black);color:var(--white);min-height:100vh;overflow-x:hidden;}
+    body.modal-open{overflow:hidden;}
 
     /* NAV */
     nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:58px;}
-    .nav-logo img {
-    height: 40px;
-    width: auto;
-    cursor: pointer;
-    }
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;line-height:1.1;cursor:pointer;}
+    .nav-logo span{color:var(--white);display:block;font-size:0.52rem;letter-spacing:0.38em;font-family:'Montserrat',sans-serif;font-weight:300;margin-top:2px;}
     .nav-links{display:flex;gap:1.6rem;align-items:center;}
     .nav-links a{font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--white-dim);cursor:pointer;text-decoration:none;transition:color .2s;}
     .nav-links a:hover{color:var(--gold);}
@@ -37,7 +33,7 @@
     .hero{padding:3.5rem 2rem 3rem;background:var(--black);display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;overflow:hidden;}
     .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(201,168,76,0.04) 0%,transparent 70%);pointer-events:none;}
     .hero-eyebrow{font-size:0.58rem;letter-spacing:0.42em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
-    .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:300;line-height:1.05;color:var(--white);margin-bottom:0.7rem;}
+    .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:300;line-height:1.05;margin-bottom:0.7rem;}
     .hero h1 em{font-style:italic;color:var(--gold-light);}
     .hero-divider{display:flex;align-items:center;gap:0.8rem;margin:1rem auto 1.2rem;}
     .hero-divider span{width:36px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
@@ -51,7 +47,7 @@
     .section{padding:3rem 1.5rem 4rem;max-width:1080px;margin:0 auto;}
     .section-header{text-align:center;margin-bottom:2.5rem;}
     .section-eyebrow{font-size:0.56rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold);margin-bottom:0.7rem;}
-    .section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:300;color:var(--white);}
+    .section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:300;}
     .filters{display:flex;gap:0.45rem;justify-content:center;margin-bottom:2.5rem;flex-wrap:wrap;}
     .filter-btn{background:transparent;border:1px solid rgba(201,168,76,0.18);color:var(--white-dim);font-family:'Montserrat',sans-serif;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.45rem 1.1rem;cursor:pointer;border-radius:50px;transition:all .2s;}
     .filter-btn.active,.filter-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
@@ -61,20 +57,31 @@
     .prop-card{background:var(--black-2);border:1px solid rgba(245,245,240,0.07);border-radius:var(--radius);overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;cursor:pointer;animation:fadeUp .45s ease both;}
     .prop-card:hover{transform:translateY(-4px);border-color:rgba(201,168,76,0.32);box-shadow:0 18px 36px rgba(0,0,0,0.55);}
     @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-    .prop-img-wrap{position:relative;width:100%;height:185px;overflow:hidden;}
-    .prop-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;}
-    .prop-card:hover .prop-img-wrap img{transform:scale(1.05);}
-    .prop-placeholder{width:100%;height:185px;background:var(--black-3);display:flex;align-items:center;justify-content:center;}
-    .prop-placeholder i{font-size:2.2rem;color:rgba(201,168,76,0.12);}
-    .prop-tags-overlay{position:absolute;top:0.7rem;left:0.7rem;display:flex;gap:0.35rem;flex-wrap:wrap;}
+
+    /* CARD CAROUSEL */
+    .card-carousel{position:relative;width:100%;height:185px;overflow:hidden;}
+    .card-carousel-track{display:flex;height:100%;transition:transform .4s ease;}
+    .card-carousel-track img{min-width:100%;height:185px;object-fit:cover;display:block;}
+    .card-placeholder{width:100%;height:185px;background:var(--black-3);display:flex;align-items:center;justify-content:center;}
+    .card-placeholder i{font-size:2.2rem;color:rgba(201,168,76,0.12);}
+    .card-nav-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(10,10,10,0.65);border:1px solid rgba(201,168,76,0.25);color:var(--gold);width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:3;opacity:0;}
+    .card-carousel:hover .card-nav-btn{opacity:1;}
+    .card-nav-btn:hover{background:rgba(201,168,76,0.2);}
+    .card-nav-prev{left:0.5rem;}
+    .card-nav-next{right:0.5rem;}
+    .card-dots{position:absolute;bottom:0.5rem;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:3;}
+    .card-dot{width:5px;height:5px;border-radius:50%;background:rgba(245,245,240,0.35);transition:all .2s;cursor:pointer;}
+    .card-dot.active{background:var(--gold);width:12px;border-radius:3px;}
+    .prop-tags-overlay{position:absolute;top:0.7rem;left:0.7rem;display:flex;gap:0.35rem;flex-wrap:wrap;z-index:3;}
     .tag{font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.26rem 0.6rem;font-weight:600;border-radius:50px;}
     .tag-new{background:var(--gold);color:#0a0a0a;}
     .tag-featured{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.45);color:var(--gold);}
     .tag-type{background:rgba(245,245,240,0.08);border:1px solid rgba(245,245,240,0.13);color:var(--white);}
-    .prop-ref{position:absolute;bottom:0.65rem;right:0.65rem;font-size:0.48rem;letter-spacing:0.14em;color:var(--white-dim);background:rgba(10,10,10,0.78);backdrop-filter:blur(6px);padding:0.2rem 0.55rem;border-radius:50px;border:1px solid rgba(245,245,240,0.09);}
-    .photo-count{position:absolute;bottom:0.65rem;left:0.65rem;font-size:0.48rem;letter-spacing:0.1em;color:var(--white-dim);background:rgba(10,10,10,0.78);backdrop-filter:blur(6px);padding:0.2rem 0.55rem;border-radius:50px;border:1px solid rgba(245,245,240,0.09);display:flex;align-items:center;gap:4px;}
+    .prop-ref{position:absolute;bottom:0.65rem;right:0.65rem;font-size:0.48rem;letter-spacing:0.14em;color:var(--white-dim);background:rgba(10,10,10,0.78);backdrop-filter:blur(6px);padding:0.2rem 0.55rem;border-radius:50px;border:1px solid rgba(245,245,240,0.09);z-index:3;}
+    .photo-count{position:absolute;bottom:0.65rem;left:0.65rem;font-size:0.48rem;color:var(--white-dim);background:rgba(10,10,10,0.78);backdrop-filter:blur(6px);padding:0.2rem 0.55rem;border-radius:50px;border:1px solid rgba(245,245,240,0.09);display:flex;align-items:center;gap:4px;z-index:3;}
+
     .prop-body{padding:1.1rem 1.25rem 1.25rem;}
-    .prop-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:var(--white);margin-bottom:0.22rem;}
+    .prop-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;margin-bottom:0.22rem;}
     .prop-location{font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--white-dim);margin-bottom:0.9rem;display:flex;align-items:center;gap:0.3rem;}
     .prop-location i{font-size:10px;color:var(--gold);}
     .prop-infos{display:flex;margin-bottom:0.9rem;background:var(--black-3);border-radius:var(--radius-xs);overflow:hidden;border:1px solid rgba(245,245,240,0.05);}
@@ -84,9 +91,9 @@
     .info-lbl{font-size:0.44rem;letter-spacing:0.13em;text-transform:uppercase;color:var(--white-dim);margin-top:2px;}
     .prop-divider{height:1px;background:rgba(245,245,240,0.06);margin:0.8rem 0;}
     .prop-bottom{display:flex;align-items:flex-end;justify-content:space-between;}
-    .prop-price{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);font-weight:300;line-height:1;}
-    .prop-price-sub{font-size:0.54rem;color:var(--white-dim);margin-top:3px;}
-    .prop-commission{font-size:0.52rem;color:rgba(201,168,76,0.55);margin-top:2px;}
+    .prop-price{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--gold);font-weight:300;line-height:1;}
+    .prop-price-sub{font-size:0.56rem;color:var(--white-dim);margin-top:3px;}
+    .prop-commission{font-size:0.58rem;color:rgba(201,168,76,0.65);margin-top:3px;}
     .btn-detail{background:transparent;border:1px solid rgba(201,168,76,0.25);color:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.45rem 0.85rem;cursor:pointer;border-radius:var(--radius-xs);transition:all .2s;white-space:nowrap;}
     .btn-detail:hover{background:var(--gold-dim);border-color:var(--gold);}
     .loading-state{text-align:center;padding:4rem;color:var(--white-dim);}
@@ -96,59 +103,52 @@
     .empty-state i{font-size:2.2rem;color:rgba(201,168,76,0.12);display:block;margin-bottom:0.7rem;}
 
     /* DETAIL MODAL */
-    .detail-backdrop{display:none;position:fixed;inset:0;z-index:500;background:rgba(5,5,5,0.92);backdrop-filter:blur(10px);align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto;}
+    .detail-backdrop{display:none;position:fixed;inset:0;z-index:500;background:rgba(5,5,5,0.92);backdrop-filter:blur(10px);align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;}
     .detail-backdrop.open{display:flex;}
     .detail-modal{background:var(--black-2);border:1px solid rgba(201,168,76,0.18);border-radius:var(--radius);width:100%;max-width:720px;margin:auto;}
 
-    /* CARROUSEL */
-    .carousel{position:relative;width:100%;height:320px;overflow:hidden;border-radius:var(--radius) var(--radius) 0 0;}
-    .carousel-track{display:flex;height:100%;transition:transform .4s ease;}
-    .carousel-slide{min-width:100%;height:100%;object-fit:cover;display:block;}
-    .carousel-placeholder{min-width:100%;height:100%;background:var(--black-3);display:flex;align-items:center;justify-content:center;}
-    .carousel-placeholder i{font-size:3.5rem;color:rgba(201,168,76,0.1);}
-    .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(10,10,10,0.7);border:1px solid rgba(201,168,76,0.3);color:var(--gold);width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2;}
-    .carousel-btn:hover{background:rgba(201,168,76,0.15);}
-    .carousel-prev{left:0.75rem;}
-    .carousel-next{right:0.75rem;}
-    .carousel-dots{position:absolute;bottom:0.75rem;left:50%;transform:translateX(-50%);display:flex;gap:6px;}
-    .carousel-dot{width:6px;height:6px;border-radius:50%;background:rgba(245,245,240,0.3);cursor:pointer;transition:all .2s;}
-    .carousel-dot.active{background:var(--gold);width:18px;border-radius:3px;}
-    .carousel-counter{position:absolute;top:0.75rem;right:0.75rem;font-size:0.5rem;letter-spacing:0.12em;color:var(--white);background:rgba(10,10,10,0.72);backdrop-filter:blur(6px);padding:0.22rem 0.6rem;border-radius:50px;}
+    /* DETAIL CAROUSEL */
+    .d-carousel{position:relative;width:100%;height:340px;overflow:hidden;border-radius:var(--radius) var(--radius) 0 0;}
+    .d-carousel-track{display:flex;height:100%;transition:transform .4s ease;}
+    .d-carousel-track img{min-width:100%;height:340px;object-fit:cover;display:block;}
+    .d-carousel-placeholder{width:100%;height:340px;background:var(--black-3);display:flex;align-items:center;justify-content:center;border-radius:var(--radius) var(--radius) 0 0;}
+    .d-carousel-placeholder i{font-size:3.5rem;color:rgba(201,168,76,0.1);}
+    .d-carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(10,10,10,0.7);border:1px solid rgba(201,168,76,0.3);color:var(--gold);width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2;}
+    .d-carousel-btn:hover{background:rgba(201,168,76,0.15);}
+    .d-carousel-prev{left:0.75rem;}
+    .d-carousel-next{right:0.75rem;}
+    .d-carousel-dots{position:absolute;bottom:0.85rem;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2;}
+    .d-carousel-dot{width:6px;height:6px;border-radius:50%;background:rgba(245,245,240,0.3);cursor:pointer;transition:all .2s;}
+    .d-carousel-dot.active{background:var(--gold);width:18px;border-radius:3px;}
+    .d-carousel-counter{position:absolute;top:0.75rem;right:0.75rem;font-size:0.5rem;letter-spacing:0.12em;color:var(--white);background:rgba(10,10,10,0.72);backdrop-filter:blur(6px);padding:0.22rem 0.6rem;border-radius:50px;z-index:2;}
 
     .detail-body{padding:1.75rem 2rem 2rem;}
     .detail-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.35rem;gap:1rem;}
-    .detail-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:300;color:var(--white);}
+    .detail-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:300;}
     .detail-close{background:transparent;border:1px solid rgba(245,245,240,0.12);color:var(--white-dim);width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
     .detail-close:hover{border-color:rgba(245,245,240,0.35);color:var(--white);}
     .detail-meta{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;}
     .detail-loc{font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--white-dim);display:flex;align-items:center;gap:0.3rem;}
     .detail-loc i{color:var(--gold);font-size:11px;}
     .detail-ref-pill{font-size:0.48rem;letter-spacing:0.12em;color:var(--gold);background:rgba(201,168,76,0.09);border:1px solid rgba(201,168,76,0.18);padding:0.18rem 0.55rem;border-radius:50px;}
-
-    /* DETAIL SPECS GRID */
     .specs-section{margin-bottom:1.5rem;}
     .specs-title{font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}
-    .specs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:0.5rem;}
+    .specs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:0.5rem;}
     .spec-item{background:var(--black-3);border:1px solid rgba(245,245,240,0.05);border-radius:var(--radius-xs);padding:0.75rem 0.6rem;text-align:center;}
     .spec-icon{font-size:1.2rem;color:var(--gold);margin-bottom:4px;}
-    .spec-val{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--white);line-height:1.1;}
+    .spec-val{font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.1;}
     .spec-lbl{font-size:0.44rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--white-dim);margin-top:3px;}
-
-    /* EQUIPEMENTS */
     .equip-section{margin-bottom:1.5rem;}
     .equip-grid{display:flex;flex-wrap:wrap;gap:0.5rem;}
-    .equip-tag{display:flex;align-items:center;gap:0.4rem;font-size:0.6rem;letter-spacing:0.08em;padding:0.35rem 0.75rem;border-radius:50px;border:1px solid rgba(201,168,76,0.25);color:var(--gold);background:rgba(201,168,76,0.06);}
+    .equip-tag{display:flex;align-items:center;gap:0.4rem;font-size:0.6rem;padding:0.35rem 0.75rem;border-radius:50px;border:1px solid rgba(201,168,76,0.25);color:var(--gold);background:rgba(201,168,76,0.06);}
     .equip-tag i{font-size:12px;}
-
-    /* CUSTOM TAGS */
     .custom-tags-section{margin-bottom:1.5rem;}
-    .custom-tag{display:inline-flex;align-items:center;font-size:0.58rem;letter-spacing:0.08em;padding:0.3rem 0.75rem;border-radius:50px;background:var(--black-3);border:1px solid rgba(245,245,240,0.1);color:var(--white-dim);margin:0 0.35rem 0.35rem 0;}
-
+    .custom-tag{display:inline-flex;align-items:center;font-size:0.58rem;padding:0.3rem 0.75rem;border-radius:50px;background:var(--black-3);border:1px solid rgba(245,245,240,0.1);color:var(--white-dim);margin:0 0.35rem 0.35rem 0;}
     .detail-desc{font-size:0.72rem;line-height:1.8;color:var(--white-dim);margin-bottom:1.5rem;}
     .detail-price-row{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;background:var(--black-3);border-radius:var(--radius-xs);border:1px solid rgba(201,168,76,0.1);}
-    .detail-price{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold);font-weight:300;}
-    .detail-price-lbl{font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--white-dim);margin-bottom:3px;}
-    .detail-commission-val{font-size:0.7rem;color:var(--gold-light);}
+    .detail-price{font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:var(--gold);font-weight:300;}
+    .detail-price-lbl{font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--white-dim);margin-bottom:4px;}
+    .detail-commission-val{font-size:0.85rem;color:var(--gold-light);font-family:'Cormorant Garamond',serif;}
 
     /* DISCORD */
     .discord-section{background:var(--black-2);border-top:1px solid rgba(201,168,76,0.07);border-bottom:1px solid rgba(201,168,76,0.07);text-align:center;padding:4.5rem 2rem;}
@@ -159,10 +159,7 @@
 
     /* FOOTER */
     footer{background:#050505;text-align:center;padding:2.5rem 2rem;border-top:1px solid rgba(201,168,76,0.09);}
-    .footer-logo img {
-    height: 50px;
-    width: auto;
-    }
+    .footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:0.35rem;}
     .footer-sub{font-size:0.5rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--white-dim);margin-bottom:1.2rem;}
     .footer-line{width:44px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 1.2rem;}
     .footer-copy{font-size:0.55rem;color:rgba(245,245,240,0.22);letter-spacing:0.1em;}
@@ -172,12 +169,12 @@
     .admin-overlay.open{display:flex;}
     .admin-bar{background:var(--black-2);border-bottom:1px solid rgba(201,168,76,0.13);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:58px;flex-shrink:0;}
     .admin-bar-title{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:1.05rem;letter-spacing:0.12em;}
-    .btn-close-admin{background:transparent;border:1px solid rgba(245,245,240,0.13);color:var(--white-dim);font-family:'Montserrat',sans-serif;font-size:0.6rem;letter-spacing:0.13em;padding:0.38rem 0.9rem;cursor:pointer;border-radius:var(--radius-xs);transition:all .2s;}
+    .btn-close-admin{background:transparent;border:1px solid rgba(245,245,240,0.13);color:var(--white-dim);font-family:'Montserrat',sans-serif;font-size:0.6rem;padding:0.38rem 0.9rem;cursor:pointer;border-radius:var(--radius-xs);transition:all .2s;}
     .btn-close-admin:hover{border-color:rgba(245,245,240,0.35);color:var(--white);}
     .admin-body{flex:1;overflow-y:auto;padding:1.75rem;max-width:1080px;width:100%;margin:0 auto;}
     .pw-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:0.9rem;text-align:center;}
     .pw-screen h2{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;}
-    .pw-screen p{font-size:0.66rem;color:var(--white-dim);letter-spacing:0.1em;margin-bottom:0.5rem;}
+    .pw-screen p{font-size:0.66rem;color:var(--white-dim);margin-bottom:0.5rem;}
     .pw-input{background:var(--black-3);border:1px solid rgba(201,168,76,0.22);color:var(--white);font-family:'Montserrat',sans-serif;font-size:0.85rem;padding:0.75rem 1.1rem;width:260px;outline:none;text-align:center;letter-spacing:0.22em;border-radius:var(--radius-sm);}
     .pw-input:focus{border-color:var(--gold);}
     .pw-input::placeholder{color:rgba(245,245,240,0.15);}
@@ -187,14 +184,14 @@
     .admin-panel{display:none;}
     .admin-panel.visible{display:block;}
     .admin-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.8rem;}
-    .admin-topbar h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--white);font-weight:300;}
+    .admin-topbar h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;}
     .btn-add{background:var(--gold);color:#0a0a0a;font-family:'Montserrat',sans-serif;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.58rem 1.1rem;border:none;cursor:pointer;font-weight:600;border-radius:var(--radius-xs);display:flex;align-items:center;gap:0.35rem;transition:all .2s;}
     .btn-add:hover{background:var(--gold-light);}
     .admin-table-wrap{overflow-x:auto;border-radius:var(--radius-sm);border:1px solid rgba(245,245,240,0.06);}
     .admin-table{width:100%;border-collapse:collapse;font-size:0.68rem;}
     .admin-table thead tr{background:var(--black-3);border-bottom:1px solid rgba(201,168,76,0.1);}
     .admin-table th{text-align:left;padding:0.7rem 0.85rem;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);font-weight:400;}
-    .admin-table td{padding:0.85rem 0.85rem;border-bottom:1px solid rgba(245,245,240,0.04);color:var(--white-dim);vertical-align:middle;}
+    .admin-table td{padding:0.85rem;border-bottom:1px solid rgba(245,245,240,0.04);color:var(--white-dim);vertical-align:middle;}
     .admin-table tr:last-child td{border-bottom:none;}
     .admin-table tr:hover td{background:rgba(201,168,76,0.02);}
     .prop-name-cell{color:var(--white);font-family:'Cormorant Garamond',serif;font-size:0.92rem;}
@@ -215,41 +212,44 @@
     /* FORM MODAL */
     .modal-backdrop{display:none;position:fixed;inset:0;z-index:1100;background:rgba(5,5,5,0.88);align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto;}
     .modal-backdrop.open{display:flex;}
-    .modal{background:var(--black-2);border:1px solid rgba(201,168,76,0.16);border-radius:var(--radius);padding:1.75rem;width:100%;max-width:680px;margin:auto;}
-    .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--white);font-weight:300;margin-bottom:1.4rem;}
+    .modal{background:var(--black-2);border:1px solid rgba(201,168,76,0.16);border-radius:var(--radius);padding:1.75rem;width:100%;max-width:680px;margin:0 auto;}
+    .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;margin-bottom:1.4rem;}
     .form-section-title{font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin:1.25rem 0 0.75rem;padding-top:1.25rem;border-top:1px solid rgba(245,245,240,0.05);}
-    .form-section-title:first-of-type{margin-top:0;padding-top:0;border-top:none;}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;margin-bottom:0.85rem;}
     .form-row.triple{grid-template-columns:1fr 1fr 1fr;}
     .form-row.full{grid-template-columns:1fr;}
     .form-group{display:flex;flex-direction:column;gap:0.35rem;}
-    .form-label{font-size:0.55rem;letter-spacing:0.17em;text-transform:uppercase;color:var(--gold);}
+    .form-label{font-size:0.55rem;letter-spacing:0.17em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;justify-content:space-between;}
+    .form-label-edit{font-size:0.5rem;color:rgba(201,168,76,0.55);cursor:pointer;letter-spacing:0.08em;text-transform:none;font-weight:400;transition:color .15s;}
+    .form-label-edit:hover{color:var(--gold);}
     .form-input,.form-select,.form-textarea{background:var(--black-3);border:1px solid rgba(245,245,240,0.09);color:var(--white);font-family:'Montserrat',sans-serif;font-size:0.76rem;padding:0.58rem 0.8rem;outline:none;transition:border-color .2s;width:100%;border-radius:var(--radius-xs);}
     .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);}
     .form-textarea{resize:vertical;min-height:74px;}
     .form-select option{background:var(--black-2);}
     .form-hint{font-size:0.54rem;color:var(--white-dim);margin-top:1px;}
-    .info3-label-input{background:var(--black-3);border:1px solid rgba(245,245,240,0.09);color:var(--white);font-family:'Montserrat',sans-serif;font-size:0.68rem;padding:0.38rem 0.6rem;outline:none;border-radius:var(--radius-xs);width:100%;margin-top:4px;}
-    .info3-label-input:focus{border-color:var(--gold);}
+    /* label-edit pour sous-champs */
+    .sublabel-row{display:flex;align-items:center;gap:0.4rem;margin-top:4px;}
+    .sublabel-input{flex:1;background:var(--black-3);border:1px solid rgba(245,245,240,0.09);color:var(--white);font-family:'Montserrat',sans-serif;font-size:0.68rem;padding:0.38rem 0.6rem;outline:none;border-radius:var(--radius-xs);}
+    .sublabel-input:focus{border-color:var(--gold);}
+    .sublabel-static{flex:1;font-size:0.65rem;color:var(--white-dim);padding:0.38rem 0;letter-spacing:0.05em;}
+    .sublabel-edit-btn{font-size:0.5rem;color:rgba(201,168,76,0.55);cursor:pointer;white-space:nowrap;transition:color .15s;}
+    .sublabel-edit-btn:hover{color:var(--gold);}
     .form-checkbox-row{display:flex;align-items:center;gap:0.55rem;margin-bottom:0.4rem;}
     .form-checkbox-row input[type=checkbox]{accent-color:var(--gold);width:13px;height:13px;cursor:pointer;}
     .form-checkbox-row label{font-size:0.66rem;color:var(--white-dim);cursor:pointer;}
-
-    /* PHOTO INPUTS */
+    /* Photos */
     .photo-inputs{display:flex;flex-direction:column;gap:0.5rem;}
     .photo-input-row{display:flex;gap:0.5rem;align-items:center;}
     .photo-input-row input{flex:1;}
-    .btn-add-photo{background:transparent;border:1px dashed rgba(201,168,76,0.3);color:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.58rem;letter-spacing:0.12em;padding:0.5rem;cursor:pointer;border-radius:var(--radius-xs);transition:all .2s;width:100%;text-align:center;margin-top:0.35rem;}
+    .btn-add-photo{background:transparent;border:1px dashed rgba(201,168,76,0.3);color:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.58rem;padding:0.5rem;cursor:pointer;border-radius:var(--radius-xs);transition:all .2s;width:100%;text-align:center;margin-top:0.35rem;}
     .btn-add-photo:hover{border-color:var(--gold);background:var(--gold-dim);}
     .btn-remove-photo{background:transparent;border:1px solid rgba(224,84,84,0.2);color:#e05454;width:28px;height:28px;border-radius:var(--radius-xs);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
     .btn-remove-photo:hover{background:rgba(224,84,84,0.1);}
-
-    /* EQUIPEMENTS CHECKBOXES */
+    /* Equip */
     .equip-checkboxes{display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;}
     .equip-check-item{display:flex;align-items:center;gap:0.45rem;font-size:0.62rem;color:var(--white-dim);cursor:pointer;}
     .equip-check-item input[type=checkbox]{accent-color:var(--gold);width:13px;height:13px;}
-
-    /* CUSTOM TAGS INPUT */
+    /* Custom tags */
     .tags-input-wrap{display:flex;gap:0.5rem;}
     .tags-input-wrap input{flex:1;}
     .btn-add-tag{background:var(--gold-dim);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.6rem;padding:0.4rem 0.8rem;cursor:pointer;border-radius:var(--radius-xs);white-space:nowrap;transition:all .2s;}
@@ -258,9 +258,8 @@
     .tag-pill{display:inline-flex;align-items:center;gap:0.35rem;font-size:0.58rem;padding:0.28rem 0.65rem;border-radius:50px;background:var(--black-3);border:1px solid rgba(245,245,240,0.1);color:var(--white-dim);}
     .tag-pill button{background:none;border:none;color:rgba(224,84,84,0.7);cursor:pointer;font-size:10px;padding:0;line-height:1;}
     .tag-pill button:hover{color:#e05454;}
-
     .modal-actions{display:flex;justify-content:flex-end;gap:0.65rem;margin-top:1.4rem;padding-top:1.4rem;border-top:1px solid rgba(245,245,240,0.05);}
-    .btn-cancel{background:transparent;border:1px solid rgba(245,245,240,0.1);color:var(--white-dim);font-family:'Montserrat',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.55rem 1.1rem;cursor:pointer;border-radius:var(--radius-xs);}
+    .btn-cancel{background:transparent;border:1px solid rgba(245,245,240,0.1);color:var(--white-dim);font-family:'Montserrat',sans-serif;font-size:0.6rem;text-transform:uppercase;padding:0.55rem 1.1rem;cursor:pointer;border-radius:var(--radius-xs);}
     .btn-save{background:var(--gold);color:#0a0a0a;font-family:'Montserrat',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.55rem 1.4rem;border:none;cursor:pointer;font-weight:600;border-radius:var(--radius-xs);}
     .btn-save:hover{background:var(--gold-light);}
     .btn-save:disabled{opacity:0.5;cursor:not-allowed;}
@@ -273,21 +272,19 @@
 <body>
 
 <nav>
-  <div class="nav-logo" onclick="scrollToId('home')">
-  <img src="https://r2.fivemanage.com/MN8Tipc06r29Wtd7Y4Fk8/43x3a8.png" alt="San Andreas Real Estate">
-  </div>
+  <div class="nav-logo" onclick="scrollToId('home')">San Andreas<span>Real Estate</span></div>
   <div class="nav-links">
     <a onclick="scrollToId('properties')">Propriétés</a>
-    <a onclick="scrollToId('discord')">Intranet</a>
-    <button class="btn-admin" onclick="openAdmin()"><i class="ti ti-settings" aria-hidden="true" style="font-size:10px;margin-right:4px;"></i>Admin</button>
+    <a onclick="scrollToId('discord')">Communauté</a>
+    <button class="btn-admin" onclick="openAdmin()"><i class="ti ti-settings" style="font-size:10px;margin-right:4px;"></i>Admin</button>
   </div>
 </nav>
 
 <section class="hero" id="home">
   <div class="hero-eyebrow">Bienvenue chez</div>
   <h1>San Andreas<br><em>Real Estate</em></h1>
-  <div class="hero-divider"><span></span><i class="ti ti-diamond" aria-hidden="true" style="font-size:9px;color:var(--gold);"></i><span></span></div>
-  <p class="hero-sub">L'excellence immobilière au cœur de San Andreas. Propriétés à la vente et à la location.</p>
+  <div class="hero-divider"><span></span><i class="ti ti-diamond" style="font-size:9px;color:var(--gold);"></i><span></span></div>
+  <p class="hero-sub">L'excellence immobilière au cœur de San Andreas. Propriétés d'exception à la vente et à la location.</p>
   <div class="hero-stats">
     <div class="hero-stat"><div class="num" id="stat-total">—</div><div class="lbl">Biens</div></div>
     <div class="hero-stat"><div class="num" id="stat-sale">—</div><div class="lbl">Vente</div></div>
@@ -308,56 +305,46 @@
       <button class="filter-btn" onclick="filterProps('featured',this)">En vedette</button>
     </div>
     <div class="props-grid" id="props-grid">
-      <div class="loading-state" style="grid-column:1/-1;"><i class="ti ti-loader-2" aria-hidden="true"></i><p style="font-size:0.7rem;">Chargement…</p></div>
+      <div class="loading-state" style="grid-column:1/-1;"><i class="ti ti-loader-2"></i><p style="font-size:0.7rem;">Chargement…</p></div>
     </div>
   </div>
 </div>
 
 <div class="discord-section" id="discord">
   <div class="section-eyebrow">Communauté</div>
-  <h2>Rejoignez notre Intranet</h2>
+  <h2>Rejoignez notre Discord</h2>
   <div style="width:44px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:1rem auto;"></div>
   <p>Accédez aux opportunités en avant-première et soyez alerté des nouvelles propriétés en temps réel.</p>
-  <a href="https://discord.gg/bvnyEcY7pY" target="_blank" class="btn-discord">
-    <svg width="17" height="13" viewBox="0 0 18 14" fill="none" aria-hidden="true"><path d="M15.25 1.19A14.74 14.74 0 0011.66 0c-.17.3-.36.7-.49 1.02a13.62 13.62 0 00-4.34 0A10.85 10.85 0 006.34 0 14.77 14.77 0 002.74 1.19C.39 4.78-.24 8.28.08 11.73a15.08 15.08 0 004.6 2.35c.37-.51.7-1.05.99-1.62-.54-.21-1.06-.46-1.55-.76l.38-.3a10.7 10.7 0 009 0c.12.1.25.2.38.3-.49.3-1.01.55-1.55.76.28.57.62 1.11.99 1.62a15.04 15.04 0 004.6-2.35c.38-4.01-.65-7.48-2.77-10.54zM6.01 9.6c-.93 0-1.7-.87-1.7-1.94s.75-1.94 1.7-1.94c.95 0 1.72.87 1.7 1.94 0 1.07-.75 1.94-1.7 1.94zm6.28 0c-.94 0-1.7-.87-1.7-1.94s.75-1.94 1.7-1.94c.95 0 1.72.87 1.7 1.94 0 1.07-.75 1.94-1.7 1.94z" fill="white"/></svg>
-    Rejoindre l'Intranet
+  <a href="https://discord.gg/VOTRE-LIEN" target="_blank" class="btn-discord">
+    <svg width="17" height="13" viewBox="0 0 18 14" fill="none"><path d="M15.25 1.19A14.74 14.74 0 0011.66 0c-.17.3-.36.7-.49 1.02a13.62 13.62 0 00-4.34 0A10.85 10.85 0 006.34 0 14.77 14.77 0 002.74 1.19C.39 4.78-.24 8.28.08 11.73a15.08 15.08 0 004.6 2.35c.37-.51.7-1.05.99-1.62-.54-.21-1.06-.46-1.55-.76l.38-.3a10.7 10.7 0 009 0c.12.1.25.2.38.3-.49.3-1.01.55-1.55.76.28.57.62 1.11.99 1.62a15.04 15.04 0 004.6-2.35c.38-4.01-.65-7.48-2.77-10.54zM6.01 9.6c-.93 0-1.7-.87-1.7-1.94s.75-1.94 1.7-1.94c.95 0 1.72.87 1.7 1.94 0 1.07-.75 1.94-1.7 1.94zm6.28 0c-.94 0-1.7-.87-1.7-1.94s.75-1.94 1.7-1.94c.95 0 1.72.87 1.7 1.94 0 1.07-.75 1.94-1.7 1.94z" fill="white"/></svg>
+    Rejoindre le Discord
   </a>
 </div>
 
 <footer>
-  <div class="footer-logo">
-  <img src="https://r2.fivemanage.com/MN8Tipc06r29Wtd7Y4Fk8/43x3a8.png" alt="San Andreas Real Estate">
-  </div>
+  <div class="footer-logo">San Andreas</div>
+  <div class="footer-sub">Real Estate</div>
   <div class="footer-line"></div>
   <div class="footer-copy">© 2024 San Andreas Real Estate — Tous droits réservés</div>
 </footer>
 
 <!-- DETAIL MODAL -->
 <div class="detail-backdrop" id="detail-backdrop">
-  <div class="detail-modal">
-    <div id="d-carousel"></div>
+  <div class="detail-modal" id="detail-modal">
+    <div id="d-carousel-wrap"></div>
     <div class="detail-body">
       <div class="detail-top">
         <div class="detail-title" id="d-title"></div>
-        <button class="detail-close" onclick="closeDetail()" aria-label="Fermer"><i class="ti ti-x" aria-hidden="true" style="font-size:13px;"></i></button>
+        <button class="detail-close" onclick="closeDetail()"><i class="ti ti-x" style="font-size:13px;"></i></button>
       </div>
       <div class="detail-meta">
         <div class="detail-loc" id="d-loc"></div>
         <span class="detail-ref-pill" id="d-ref"></span>
         <span id="d-type-badge"></span>
       </div>
-      <div class="specs-section" id="d-specs-section">
-        <div class="specs-title">Caractéristiques</div>
-        <div class="specs-grid" id="d-specs"></div>
-      </div>
-      <div class="equip-section" id="d-equip-section" style="display:none;">
-        <div class="specs-title">Équipements</div>
-        <div class="equip-grid" id="d-equip"></div>
-      </div>
-      <div class="custom-tags-section" id="d-tags-section" style="display:none;">
-        <div class="specs-title">Autres atouts</div>
-        <div id="d-tags"></div>
-      </div>
+      <div class="specs-section"><div class="specs-title">Caractéristiques</div><div class="specs-grid" id="d-specs"></div></div>
+      <div class="equip-section" id="d-equip-section" style="display:none;"><div class="specs-title">Équipements</div><div class="equip-grid" id="d-equip"></div></div>
+      <div class="custom-tags-section" id="d-tags-section" style="display:none;"><div class="specs-title">Autres atouts</div><div id="d-tags"></div></div>
       <div class="detail-desc" id="d-desc"></div>
       <div class="detail-price-row">
         <div>
@@ -377,7 +364,7 @@
 <div class="admin-overlay" id="admin-overlay">
   <div class="admin-bar">
     <span class="admin-bar-title">Panel Administration</span>
-    <button class="btn-close-admin" onclick="closeAdmin()"><i class="ti ti-x" aria-hidden="true" style="font-size:11px;margin-right:4px;"></i>Fermer</button>
+    <button class="btn-close-admin" onclick="closeAdmin()"><i class="ti ti-x" style="font-size:11px;margin-right:4px;"></i>Fermer</button>
   </div>
   <div class="admin-body">
     <div class="pw-screen" id="pw-screen">
@@ -385,19 +372,16 @@
       <p>Entrez le mot de passe pour continuer</p>
       <input type="password" class="pw-input" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPw()">
       <div class="pw-error" id="pw-error"></div>
-      <button class="btn-unlock" onclick="checkPw()"><i class="ti ti-lock-open" aria-hidden="true" style="font-size:11px;margin-right:4px;"></i>Déverrouiller</button>
+      <button class="btn-unlock" onclick="checkPw()"><i class="ti ti-lock-open" style="font-size:11px;margin-right:4px;"></i>Déverrouiller</button>
     </div>
     <div class="admin-panel" id="admin-panel">
       <div class="admin-topbar">
         <h3>Gestion des propriétés</h3>
-        <button class="btn-add" onclick="openModal()"><i class="ti ti-plus" aria-hidden="true" style="font-size:12px;"></i>Ajouter un bien</button>
+        <button class="btn-add" onclick="openModal()"><i class="ti ti-plus" style="font-size:12px;"></i>Ajouter un bien</button>
       </div>
       <div class="admin-table-wrap">
         <table class="admin-table">
-          <thead><tr>
-            <th><i class="ti ti-star" aria-hidden="true"></i></th>
-            <th>Réf.</th><th>Propriété</th><th>Type</th><th>Prix</th><th>Commission</th><th>Statut</th><th>Actions</th>
-          </tr></thead>
+          <thead><tr><th><i class="ti ti-star"></i></th><th>Réf.</th><th>Propriété</th><th>Type</th><th>Prix</th><th>Commission</th><th>Statut</th><th>Actions</th></tr></thead>
           <tbody id="admin-tbody"></tbody>
         </table>
       </div>
@@ -410,7 +394,7 @@
   <div class="modal">
     <h3 id="modal-title">Ajouter un bien</h3>
 
-    <div class="form-section-title">Informations générales</div>
+    <div class="form-section-title" style="border-top:none;padding-top:0;margin-top:0;">Informations générales</div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Nom du bien</label><input type="text" class="form-input" id="f-name" placeholder="Villa Oceanic"></div>
       <div class="form-group"><label class="form-label">Quartier / Zone</label><input type="text" class="form-input" id="f-location" placeholder="Vinewood Hills"></div>
@@ -421,17 +405,33 @@
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Prix ($)</label><input type="text" class="form-input" id="f-price" placeholder="1,250,000"><span class="form-hint" id="price-hint">Pour la vente</span></div>
-      <div class="form-group"><label class="form-label">Commission agence</label><input type="text" class="form-input" id="f-commission" placeholder="ex:$50,000"></div>
+      <div class="form-group"><label class="form-label">Commission agence</label><input type="text" class="form-input" id="f-commission" placeholder="ex: 5% ou $50,000"></div>
     </div>
 
     <div class="form-section-title">Caractéristiques</div>
     <div class="form-row triple">
-      <div class="form-group"><label class="form-label">Pièces</label><input type="text" class="form-input" id="f-i1v" placeholder="5"><input type="text" class="info3-label-input" id="f-i1l" placeholder="Pièces"></div>
-      <div class="form-group"><label class="form-label">Chambres</label><input type="text" class="form-input" id="f-i2v" placeholder="3"><input type="text" class="info3-label-input" id="f-i2l" placeholder="Chambres"></div>
+      <div class="form-group">
+        <label class="form-label">Info 1</label>
+        <input type="text" class="form-input" id="f-i1v" placeholder="5">
+        <div class="sublabel-row">
+          <span class="sublabel-static" id="f-i1l-display">Pièces</span>
+          <span class="sublabel-edit-btn" onclick="toggleSublabel('i1l')">✏ modifier</span>
+          <input type="text" class="sublabel-input" id="f-i1l" value="Pièces" style="display:none;" onblur="saveSublabel('i1l')">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Info 2</label>
+        <input type="text" class="form-input" id="f-i2v" placeholder="3">
+        <div class="sublabel-row">
+          <span class="sublabel-static" id="f-i2l-display">Chambres</span>
+          <span class="sublabel-edit-btn" onclick="toggleSublabel('i2l')">✏ modifier</span>
+          <input type="text" class="sublabel-input" id="f-i2l" value="Chambres" style="display:none;" onblur="saveSublabel('i2l')">
+        </div>
+      </div>
       <div class="form-group"><label class="form-label">Salles de bains</label><input type="text" class="form-input" id="f-bathrooms" placeholder="2"></div>
     </div>
     <div class="form-row triple">
-      <div class="form-group"><label class="form-label">Étage / Niveaux</label><input type="text" class="form-input" id="f-floors" placeholder="ex: 2 niveaux ou 4e"></div>
+      <div class="form-group"><label class="form-label">Étage / Niveaux</label><input type="text" class="form-input" id="f-floors" placeholder="ex: 2 niveaux"></div>
       <div class="form-group"><label class="form-label">Bureaux</label><input type="text" class="form-input" id="f-offices" placeholder="0"></div>
       <div class="form-group"><label class="form-label">Stationnement</label><select class="form-select" id="f-parking"><option value="Garage">Garage</option><option value="Garage double">Garage double</option><option value="Parking privé">Parking privé</option><option value="Parking souterrain">Parking souterrain</option><option value="Aucun">Aucun</option></select></div>
     </div>
@@ -449,13 +449,13 @@
     <div class="form-section-title">Étiquettes personnalisées</div>
     <div class="tags-input-wrap">
       <input type="text" class="form-input" id="f-tag-input" placeholder="Ex: Salle de sport, Studio, Cave à vin..." onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomTag();}">
-      <button class="btn-add-tag" onclick="addCustomTag()"><i class="ti ti-plus" aria-hidden="true" style="font-size:11px;"></i> Ajouter</button>
+      <button class="btn-add-tag" onclick="addCustomTag()"><i class="ti ti-plus" style="font-size:11px;"></i> Ajouter</button>
     </div>
     <div class="tags-preview" id="tags-preview"></div>
 
     <div class="form-section-title">Photos (jusqu'à 10 URLs)</div>
     <div class="photo-inputs" id="photo-inputs"></div>
-    <button class="btn-add-photo" id="btn-add-photo" onclick="addPhotoInput()"><i class="ti ti-plus" aria-hidden="true" style="font-size:11px;"></i> Ajouter une photo</button>
+    <button class="btn-add-photo" id="btn-add-photo" onclick="addPhotoInput()"><i class="ti ti-plus" style="font-size:11px;"></i> Ajouter une photo</button>
 
     <div class="form-section-title">Description & visibilité</div>
     <div class="form-row full"><div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="f-desc" placeholder="Décrivez la propriété..."></textarea></div></div>
@@ -472,434 +472,392 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const SUPA_URL='https://jjuysrgpthzjnyzxeqzp.supabase.co';
-  const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqdXlzcmdwdGh6am55enhlcXpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyMTc4NDgsImV4cCI6MjA5NDc5Mzg0OH0.16q3SfMkTpY2h1o1oQWL7rWW-wSXzkBbxYzjkmX1WeI';
-  const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
+const SUPA_URL='https://jjuysrgpthzjnyzxeqzp.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqdXlzcmdwdGh6am55enhlcXpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyMTc4NDgsImV4cCI6MjA5NDc5Mzg0OH0.16q3SfMkTpY2h1o1oQWL7rWW-wSXzkBbxYzjkmX1WeI';
+const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
+const ADMIN_PW='sare2024';
+const SEVEN_DAYS=7*24*60*60*1000;
+const parkingIcon={'Garage':'ti-car-garage','Garage double':'ti-car-garage','Parking privé':'ti-parking','Parking souterrain':'ti-parking','Aucun':'ti-ban'};
+const PRESET_EQUIP=[
+  {key:'cinema',label:'Cinéma',icon:'ti-device-tv'},
+  {key:'bar',label:'Bar',icon:'ti-glass-full'},
+  {key:'gym',label:'Salle de sport',icon:'ti-barbell'},
+  {key:'spa',label:'Spa',icon:'ti-droplet'},
+  {key:'wine_cellar',label:'Cave à vin',icon:'ti-bottle'},
+  {key:'game_room',label:'Salle de jeux',icon:'ti-device-gamepad'},
+  {key:'home_office',label:'Bureau à domicile',icon:'ti-briefcase'},
+  {key:'terrace',label:'Terrasse',icon:'ti-building'},
+  {key:'elevator',label:'Ascenseur',icon:'ti-elevator'},
+  {key:'security',label:'Sécurité 24/7',icon:'ti-shield-check'},
+  {key:'concierge',label:'Concierge',icon:'ti-user-check'},
+  {key:'garage_supercar',label:'Garage supercars',icon:'ti-car'},
+];
 
-  const ADMIN_PW='sare2024';
-  const SEVEN_DAYS=7*24*60*60*1000;
-  const parkingIcon={'Garage':'ti-car-garage','Garage double':'ti-car-garage','Parking privé':'ti-parking','Parking souterrain':'ti-parking','Aucun':'ti-ban'};
+let properties=[],editingId=null,currentFilter='all',adminUnlocked=false,customTags=[];
 
-  const PRESET_EQUIP=[
-    {key:'cinema',label:'Cinéma',icon:'ti-device-tv'},
-    {key:'bar',label:'Bar',icon:'ti-glass-full'},
-    {key:'gym',label:'Salle de sport',icon:'ti-barbell'},
-    {key:'spa',label:'Spa',icon:'ti-droplet'},
-    {key:'wine_cellar',label:'Cave à vin',icon:'ti-bottle'},
-    {key:'game_room',label:'Salle de jeux',icon:'ti-device-gamepad'},
-    {key:'home_office',label:'Bureau à domicile',icon:'ti-briefcase'},
-    {key:'terrace',label:'Terrasse',icon:'ti-building'},
-    {key:'elevator',label:'Ascenseur',icon:'ti-elevator'},
-    {key:'security',label:'Sécurité 24/7',icon:'ti-shield-check'},
-    {key:'concierge',label:'Concierge',icon:'ti-user-check'},
-    {key:'garage_supercar',label:'Garage supercars',icon:'ti-car'},
-  ];
+// ── CAROUSEL STATE ──
+// cardCarousels: { propId: { index, timer, photos } }
+let cardCarousels={};
+let detailCarousel={index:0,timer:null,total:0};
 
-  let properties=[],editingId=null,currentFilter='all',adminUnlocked=false;
-  let customTags=[];
-  let carouselIndex=0;
+// ── SUPABASE ──
+async function loadProperties(){
+  const{data,error}=await supa.from('properties').select('*').order('featured',{ascending:false}).order('created_at',{ascending:false});
+  if(error){console.error(error);showToast('Erreur chargement','error');return;}
+  properties=data.map(p=>({...p,img:p.img_url||'',desc:p.description||'',createdAt:new Date(p.created_at).getTime(),photos:p.photos||[],tags:p.tags||[]}));
+  renderPublic();
+}
+async function upsertProperty(p){
+  const payload={ref:p.ref,name:p.name,location:p.location,type:p.type,price:p.price,commission:p.commission,i1v:p.i1v,i1l:p.i1l,i2v:p.i2v,i2l:p.i2l,bathrooms:p.bathrooms,floors:p.floors,offices:p.offices,parking:p.parking,pool_type:p.pool_type,garden:p.garden,helipad:p.helipad,property_type:p.property_type,description:p.desc,img_url:p.photos&&p.photos[0]||'',photos:p.photos,featured:p.featured,visible:p.visible,tags:p.tags};
+  if(p.id&&typeof p.id==='number')payload.id=p.id;
+  const{error}=await supa.from('properties').upsert(payload);
+  if(error){console.error(error);showToast('Erreur sauvegarde','error');return false;}
+  return true;
+}
+async function deletePropertyDB(id){const{error}=await supa.from('properties').delete().eq('id',id);if(error){console.error(error);showToast('Erreur suppression','error');return false;}return true;}
+async function updateField(id,fields){const{error}=await supa.from('properties').update(fields).eq('id',id);if(error){console.error(error);return false;}return true;}
 
-  // ── SUPABASE ──
-  async function loadProperties(){
-    const{data,error}=await supa.from('properties').select('*').order('featured',{ascending:false}).order('created_at',{ascending:false});
-    if(error){console.error(error);showToast('Erreur chargement','error');return;}
-    properties=data.map(p=>({...p,img:p.img_url||'',desc:p.description||'',createdAt:new Date(p.created_at).getTime(),photos:p.photos||[],tags:p.tags||[]}));
-    renderPublic();
-  }
+function isNew(p){return(Date.now()-p.createdAt)<SEVEN_DAYS;}
+function getSorted(list){return[...list].sort((a,b)=>{if(b.featured!==a.featured)return b.featured-a.featured;if(isNew(b)!==isNew(a))return isNew(b)-isNew(a);return b.createdAt-a.createdAt;});}
+function genRef(type,list){const prefix=type==='sale'?'SALE':'RENT';const used=list.filter(p=>p.type===type).map(p=>parseInt((p.ref||'').split('-')[1])||0);let n=1;while(used.includes(n))n++;return`${prefix}-${String(n).padStart(3,'0')}`;}
+function showToast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove('show'),2800);}
 
-  async function upsertProperty(p){
-    const payload={ref:p.ref,name:p.name,location:p.location,type:p.type,price:p.price,commission:p.commission,i1v:p.i1v,i1l:p.i1l,i2v:p.i2v,i2l:p.i2l,bathrooms:p.bathrooms,floors:p.floors,offices:p.offices,parking:p.parking,pool_type:p.pool_type,garden:p.garden,helipad:p.helipad,property_type:p.property_type,description:p.desc,img_url:p.photos&&p.photos[0]||'',photos:p.photos,featured:p.featured,visible:p.visible,tags:p.tags};
-    if(p.id&&typeof p.id==='number')payload.id=p.id;
-    const{error}=await supa.from('properties').upsert(payload);
-    if(error){console.error(error);showToast('Erreur sauvegarde','error');return false;}
-    return true;
-  }
-
-  async function deletePropertyDB(id){
-    const{error}=await supa.from('properties').delete().eq('id',id);
-    if(error){console.error(error);showToast('Erreur suppression','error');return false;}
-    return true;
-  }
-
-  async function updateField(id,fields){
-    const{error}=await supa.from('properties').update(fields).eq('id',id);
-    if(error){console.error(error);return false;}
-    return true;
-  }
-
-  function isNew(p){return(Date.now()-p.createdAt)<SEVEN_DAYS;}
-  function getSorted(list){return[...list].sort((a,b)=>{if(b.featured!==a.featured)return b.featured-a.featured;if(isNew(b)!==isNew(a))return isNew(b)-isNew(a);return b.createdAt-a.createdAt;});}
-  function genRef(type,list){const prefix=type==='sale'?'SALE':'RENT';const used=list.filter(p=>p.type===type).map(p=>parseInt((p.ref||'').split('-')[1])||0);let n=1;while(used.includes(n))n++;return`${prefix}-${String(n).padStart(3,'0')}`;}
-  function showToast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove('show'),2800);}
-
-  // ── RENDER PUBLIC ──
-  function renderPublic(){
-    const grid=document.getElementById('props-grid');
-    let vis=properties.filter(p=>p.visible);
-    if(currentFilter==='sale')vis=vis.filter(p=>p.type==='sale');
-    else if(currentFilter==='rent')vis=vis.filter(p=>p.type==='rent');
-    else if(currentFilter==='featured')vis=vis.filter(p=>p.featured);
-    const sorted=getSorted(vis);
-    const allVis=properties.filter(p=>p.visible);
-    document.getElementById('stat-total').textContent=allVis.length;
-    document.getElementById('stat-sale').textContent=allVis.filter(p=>p.type==='sale').length;
-    document.getElementById('stat-rent').textContent=allVis.filter(p=>p.type==='rent').length;
-    if(!sorted.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><i class="ti ti-building-skyscraper" aria-hidden="true"></i><p style="font-size:0.7rem;">Aucune propriété disponible</p></div>';return;}
-    grid.innerHTML=sorted.map((p,i)=>{
-      const photos=p.photos&&p.photos.length?p.photos:[];
-      const firstPhoto=photos[0]||p.img||'';
-      return`<div class="prop-card" style="animation-delay:${i*0.07}s">
-        <div class="prop-img-wrap">
-          ${firstPhoto?`<img src="${firstPhoto}" alt="${p.name}">`:`<div class="prop-placeholder"><i class="ti ti-building" aria-hidden="true"></i></div>`}
-          <div class="prop-tags-overlay">
-            ${p.featured?'<span class="tag tag-featured">⭐ Vedette</span>':''}
-            ${isNew(p)?'<span class="tag tag-new">Nouveau</span>':''}
-            <span class="tag tag-type">${p.type==='sale'?'Vente':'Location'}</span>
-          </div>
-          <div class="prop-ref">${p.ref}</div>
-          ${photos.length>1?`<div class="photo-count"><i class="ti ti-camera" aria-hidden="true" style="font-size:10px;"></i>${photos.length}</div>`:''}
-        </div>
-        <div class="prop-body">
-          <div class="prop-title">${p.name}</div>
-          <div class="prop-location"><i class="ti ti-map-pin" aria-hidden="true"></i>${p.location}</div>
-          <div class="prop-infos">
-            <div class="prop-info"><div class="info-val">${p.i1v||'—'}</div><div class="info-lbl">${p.i1l||'Pièces'}</div></div>
-            <div class="prop-info"><div class="info-val">${p.i2v||'—'}</div><div class="info-lbl">${p.i2l||'Chambres'}</div></div>
-            <div class="prop-info"><div class="info-val"><i class="ti ${parkingIcon[p.parking]||'ti-car'}" aria-hidden="true" style="font-size:13px;color:var(--gold);"></i></div><div class="info-lbl">${p.parking||'—'}</div></div>
-          </div>
-          <div class="prop-divider"></div>
-          <div class="prop-bottom">
-            <div>
-              <div class="prop-price">$${p.price}</div>
-              <div class="prop-price-sub">${p.type==='rent'?'/ semaine':'Prix de vente'}</div>
-              ${p.commission?`<div class="prop-commission">Commission : ${p.commission}</div>`:''}
-            </div>
-            <button class="btn-detail" onclick="openDetail(${p.id})">Voir <i class="ti ti-arrow-right" aria-hidden="true" style="font-size:10px;"></i></button>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  // ── DETAIL ──
-  function openDetail(id){
-    const p=properties.find(x=>x.id===id);
-    if(!p)return;
-    const photos=p.photos&&p.photos.length?p.photos:(p.img?[p.img]:[]);
-
-    // Carrousel
-    carouselIndex=0;
-    const dc=document.getElementById('d-carousel');
-    if(!photos.length){
-      dc.innerHTML=`<div class="carousel"><div class="carousel-placeholder"><i class="ti ti-building" aria-hidden="true"></i></div></div>`;
-    } else {
-      dc.innerHTML=`<div class="carousel" id="carousel-wrap">
-        <div class="carousel-track" id="carousel-track">
-          ${photos.map(u=>`<img src="${u}" alt="${p.name}" class="carousel-slide">`).join('')}
-        </div>
-        ${photos.length>1?`
-          <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)" aria-label="Précédent"><i class="ti ti-chevron-left" aria-hidden="true" style="font-size:14px;"></i></button>
-          <button class="carousel-btn carousel-next" onclick="moveCarousel(1)" aria-label="Suivant"><i class="ti ti-chevron-right" aria-hidden="true" style="font-size:14px;"></i></button>
-          <div class="carousel-dots" id="carousel-dots">${photos.map((_,i)=>`<div class="carousel-dot${i===0?' active':''}" onclick="goCarousel(${i})"></div>`).join('')}</div>
-          <div class="carousel-counter" id="carousel-counter">1 / ${photos.length}</div>`:''}
-      </div>`;
-    }
-
-    document.getElementById('d-title').textContent=p.name;
-    document.getElementById('d-loc').innerHTML=`<i class="ti ti-map-pin" aria-hidden="true"></i>${p.location}`;
-    document.getElementById('d-ref').textContent=p.ref;
-    document.getElementById('d-type-badge').innerHTML=`<span class="tag tag-type">${p.property_type||'Bien'}</span>`;
-
-    // Specs
-    const specs=[];
-    if(p.i1v)specs.push({icon:'ti-home-2',val:p.i1v,lbl:p.i1l||'Pièces'});
-    if(p.i2v)specs.push({icon:'ti-bed',val:p.i2v,lbl:p.i2l||'Chambres'});
-    if(p.bathrooms)specs.push({icon:'ti-bath',val:p.bathrooms,lbl:'Salle de bains'});
-    if(p.floors)specs.push({icon:'ti-stairs',val:p.floors,lbl:'Étage / Niveaux'});
-    if(p.offices&&p.offices!=='0')specs.push({icon:'ti-briefcase',val:p.offices,lbl:'Bureaux'});
-    if(p.parking)specs.push({icon:parkingIcon[p.parking]||'ti-car',val:'',lbl:p.parking,isIcon:true});
-    if(p.pool_type&&p.pool_type!=='Aucune')specs.push({icon:'ti-ripple',val:'',lbl:p.pool_type,isIcon:true});
-    if(p.garden)specs.push({icon:'ti-trees',val:'',lbl:'Jardin',isIcon:true});
-    if(p.helipad)specs.push({icon:'ti-helicopter',val:'',lbl:'Hélipad',isIcon:true});
-
-    document.getElementById('d-specs').innerHTML=specs.map(s=>`
-      <div class="spec-item">
-        <div class="spec-icon"><i class="ti ${s.icon}" aria-hidden="true"></i></div>
-        ${s.isIcon?'':`<div class="spec-val">${s.val}</div>`}
-        <div class="spec-lbl">${s.lbl}</div>
-      </div>`).join('');
-
-    // Équipements preset
-    const equips=(p.tags||[]).filter(t=>PRESET_EQUIP.find(e=>e.key===t));
-    const equipEl=document.getElementById('d-equip');
-    const equipSec=document.getElementById('d-equip-section');
-    if(equips.length){
-      equipSec.style.display='block';
-      equipEl.innerHTML=equips.map(k=>{const e=PRESET_EQUIP.find(x=>x.key===k);return`<div class="equip-tag"><i class="ti ${e.icon}" aria-hidden="true"></i>${e.label}</div>`;}).join('');
-    } else equipSec.style.display='none';
-
-    // Custom tags
-    const customTagsArr=(p.tags||[]).filter(t=>!PRESET_EQUIP.find(e=>e.key===t));
-    const tagsSec=document.getElementById('d-tags-section');
-    if(customTagsArr.length){
-      tagsSec.style.display='block';
-      document.getElementById('d-tags').innerHTML=customTagsArr.map(t=>`<span class="custom-tag">${t}</span>`).join('');
-    } else tagsSec.style.display='none';
-
-    document.getElementById('d-desc').textContent=p.desc;
-    document.getElementById('d-price-lbl').textContent=p.type==='rent'?'Loyer / semaine':'Prix de vente';
-    document.getElementById('d-price').textContent=`$${p.price}`;
-    const cw=document.getElementById('d-commission-wrap');
-    if(p.commission){cw.style.display='block';document.getElementById('d-commission').textContent=p.commission;}
-    else cw.style.display='none';
-
-    document.getElementById('detail-backdrop').classList.add('open');
-  }
-
-  function moveCarousel(dir){
-    const p_photos=getCurrentDetailPhotos();
-    if(!p_photos)return;
-    carouselIndex=(carouselIndex+dir+p_photos)%p_photos;
-    updateCarousel(p_photos);
-  }
-  function goCarousel(i){
-    const p_photos=getCurrentDetailPhotos();
-    carouselIndex=i;
-    updateCarousel(p_photos);
-  }
-  function getCurrentDetailPhotos(){
-    const track=document.getElementById('carousel-track');
-    return track?track.children.length:0;
-  }
-  function updateCarousel(total){
-    const track=document.getElementById('carousel-track');
-    if(track)track.style.transform=`translateX(-${carouselIndex*100}%)`;
-    const dots=document.querySelectorAll('.carousel-dot');
-    dots.forEach((d,i)=>d.classList.toggle('active',i===carouselIndex));
-    const counter=document.getElementById('carousel-counter');
-    if(counter)counter.textContent=`${carouselIndex+1} / ${total}`;
-  }
-  function closeDetail(){document.getElementById('detail-backdrop').classList.remove('open');}
-  document.getElementById('detail-backdrop').addEventListener('click',function(e){if(e.target===this)closeDetail();});
-
-  function filterProps(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderPublic();}
-  function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
-
-  // ── ADMIN ──
-  function openAdmin(){
-    document.getElementById('admin-overlay').classList.add('open');
-    if(adminUnlocked){document.getElementById('pw-screen').style.display='none';document.getElementById('admin-panel').classList.add('visible');renderAdmin();}
-  }
-  function closeAdmin(){document.getElementById('admin-overlay').classList.remove('open');}
-  function checkPw(){
-    const v=document.getElementById('pw-input').value;
-    if(v===ADMIN_PW){adminUnlocked=true;document.getElementById('pw-screen').style.display='none';document.getElementById('admin-panel').classList.add('visible');document.getElementById('pw-error').textContent='';renderAdmin();}
-    else{document.getElementById('pw-error').textContent='Mot de passe incorrect';document.getElementById('pw-input').value='';}
-  }
-
-  function renderAdmin(){
-    const tbody=document.getElementById('admin-tbody');
-    const sorted=getSorted(properties);
-    if(!sorted.length){tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><i class="ti ti-building" aria-hidden="true"></i><p style="font-size:0.7rem;">Aucun bien</p></div></td></tr>`;return;}
-    tbody.innerHTML=sorted.map(p=>`<tr>
-      <td><button class="toggle-star ${p.featured?'':'off'}" onclick="toggleFeatured(${p.id})" aria-label="Vedette">★</button></td>
-      <td><span class="ref-pill">${p.ref}</span></td>
-      <td><span class="prop-name-cell">${p.name}</span><br><span style="font-size:0.55rem;color:var(--white-dim);">${p.location}</span></td>
-      <td>${p.type==='sale'?'Vente':'Loc.'}</td>
-      <td style="color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:0.9rem;">$${p.price}${p.type==='rent'?'<span style="font-size:0.5rem;color:var(--white-dim);"> /sem.</span>':''}</td>
-      <td style="color:rgba(201,168,76,0.65);font-size:0.65rem;">${p.commission||'—'}</td>
-      <td><span class="status-badge ${p.visible?'status-visible':'status-hidden'}">${p.visible?'Visible':'Masqué'}</span></td>
-      <td><div class="action-btns">
-        <button class="btn-action edit" onclick="editProp(${p.id})"><i class="ti ti-edit" aria-hidden="true" style="font-size:10px;"></i> Modifier</button>
-        <button class="btn-action" onclick="toggleVisible(${p.id})"><i class="ti ti-eye${p.visible?'-off':''}" aria-hidden="true" style="font-size:10px;"></i> ${p.visible?'Masquer':'Afficher'}</button>
-        <button class="btn-action del" onclick="deleteProp(${p.id})"><i class="ti ti-trash" aria-hidden="true" style="font-size:10px;"></i></button>
-      </div></td>
-    </tr>`).join('');
-  }
-
-  // ── FORM MODAL ──
-  function initEquipCheckboxes(){
-    const wrap=document.getElementById('equip-checkboxes');
-    wrap.innerHTML=PRESET_EQUIP.map(e=>`
-      <label class="equip-check-item">
-        <input type="checkbox" id="equip-${e.key}" value="${e.key}">
-        <i class="ti ${e.icon}" aria-hidden="true" style="font-size:13px;color:var(--gold);"></i>
-        ${e.label}
-      </label>`).join('');
-  }
-
-  function addPhotoInput(val=''){
-    const wrap=document.getElementById('photo-inputs');
-    if(wrap.children.length>=10)return;
-    const row=document.createElement('div');
-    row.className='photo-input-row';
-    row.innerHTML=`<input type="text" class="form-input" placeholder="https://..." value="${val}">
-      <button class="btn-remove-photo" onclick="this.parentElement.remove();updateAddPhotoBtn()" aria-label="Supprimer"><i class="ti ti-x" aria-hidden="true" style="font-size:11px;"></i></button>`;
-    wrap.appendChild(row);
-    updateAddPhotoBtn();
-  }
-
-  function updateAddPhotoBtn(){
-    const wrap=document.getElementById('photo-inputs');
-    const btn=document.getElementById('btn-add-photo');
-    btn.style.display=wrap.children.length>=10?'none':'block';
-  }
-
-  function addCustomTag(){
-    const input=document.getElementById('f-tag-input');
-    const val=input.value.trim();
-    if(!val||customTags.includes(val))return;
-    customTags.push(val);
-    input.value='';
-    renderTagsPrev();
-  }
-
-  function removeCustomTag(tag){
-    customTags=customTags.filter(t=>t!==tag);
-    renderTagsPrev();
-  }
-
-  function renderTagsPrev(){
-    document.getElementById('tags-preview').innerHTML=customTags.map(t=>`<span class="tag-pill">${t}<button onclick="removeCustomTag('${t}')" aria-label="Supprimer">✕</button></span>`).join('');
-  }
-
-  document.getElementById('f-type').addEventListener('change',function(){
-    document.getElementById('price-hint').textContent=this.value==='rent'?'Montant / semaine':'Pour la vente';
-  });
-
-  function openModal(id=null){
-    editingId=id;
-    const p=id?properties.find(x=>x.id===id):null;
-    initEquipCheckboxes();
-    document.getElementById('modal-title').textContent=id?'Modifier le bien':'Ajouter un bien';
-    document.getElementById('f-name').value=p?p.name:'';
-    document.getElementById('f-location').value=p?p.location:'';
-    document.getElementById('f-type').value=p?p.type:'sale';
-    document.getElementById('price-hint').textContent=(p?p.type:'sale')==='rent'?'Montant / semaine':'Pour la vente';
-    document.getElementById('f-property-type').value=p?p.property_type||'Villa':'Villa';
-    document.getElementById('f-price').value=p?p.price:'';
-    document.getElementById('f-commission').value=p?p.commission||'':'';
-    document.getElementById('f-i1v').value=p?p.i1v||'':'';
-    document.getElementById('f-i1l').value=p?p.i1l||'Pièces':'Pièces';
-    document.getElementById('f-i2v').value=p?p.i2v||'':'';
-    document.getElementById('f-i2l').value=p?p.i2l||'Chambres':'Chambres';
-    document.getElementById('f-bathrooms').value=p?p.bathrooms||'':'';
-    document.getElementById('f-floors').value=p?p.floors||'':'';
-    document.getElementById('f-offices').value=p?p.offices||'':'';
-    document.getElementById('f-parking').value=p?p.parking||'Garage':'Garage';
-    document.getElementById('f-pool').value=p?p.pool_type||'Aucune':'Aucune';
-    document.getElementById('f-garden').checked=p?!!p.garden:false;
-    document.getElementById('f-helipad').checked=p?!!p.helipad:false;
-    document.getElementById('f-desc').value=p?p.desc:'';
-    document.getElementById('f-featured').checked=p?p.featured:false;
-    document.getElementById('f-visible').checked=p?p.visible:true;
-
-    // Photos
-    const photoWrap=document.getElementById('photo-inputs');
-    photoWrap.innerHTML='';
-    const existingPhotos=p?(p.photos&&p.photos.length?p.photos:(p.img?[p.img]:[])):[]; 
-    existingPhotos.forEach(u=>addPhotoInput(u));
-    if(!existingPhotos.length)addPhotoInput();
-    updateAddPhotoBtn();
-
-    // Equip checkboxes
-    const allTags=p?p.tags||[]:[];
-    PRESET_EQUIP.forEach(e=>{
-      const cb=document.getElementById(`equip-${e.key}`);
-      if(cb)cb.checked=allTags.includes(e.key);
-    });
-
-    // Custom tags
-    customTags=allTags.filter(t=>!PRESET_EQUIP.find(e=>e.key===t));
-    renderTagsPrev();
-
-    document.getElementById('modal-backdrop').classList.add('open');
-  }
-
-  function closeModal(){document.getElementById('modal-backdrop').classList.remove('open');editingId=null;}
-
-  async function saveProp(){
-    const name=document.getElementById('f-name').value.trim();
-    const price=document.getElementById('f-price').value.trim();
-    if(!name||!price){alert('Nom et prix obligatoires');return;}
-    const btn=document.getElementById('btn-save');
-    btn.disabled=true;btn.textContent='Sauvegarde…';
-
-    const type=document.getElementById('f-type').value;
-    const photos=[...document.querySelectorAll('#photo-inputs input')].map(i=>i.value.trim()).filter(Boolean);
-    const presetSelected=PRESET_EQUIP.filter(e=>document.getElementById(`equip-${e.key}`)?.checked).map(e=>e.key);
-    const allTags=[...presetSelected,...customTags];
-
-    const data={
-      name,location:document.getElementById('f-location').value.trim(),
-      type,property_type:document.getElementById('f-property-type').value,
-      price,commission:document.getElementById('f-commission').value.trim(),
-      i1v:document.getElementById('f-i1v').value.trim()||'—',
-      i1l:document.getElementById('f-i1l').value.trim()||'Pièces',
-      i2v:document.getElementById('f-i2v').value.trim()||'—',
-      i2l:document.getElementById('f-i2l').value.trim()||'Chambres',
-      bathrooms:document.getElementById('f-bathrooms').value.trim(),
-      floors:document.getElementById('f-floors').value.trim(),
-      offices:document.getElementById('f-offices').value.trim(),
-      parking:document.getElementById('f-parking').value,
-      pool_type:document.getElementById('f-pool').value,
-      garden:document.getElementById('f-garden').checked,
-      helipad:document.getElementById('f-helipad').checked,
-      desc:document.getElementById('f-desc').value.trim(),
-      photos,tags:allTags,
-      featured:document.getElementById('f-featured').checked,
-      visible:document.getElementById('f-visible').checked,
-    };
-
-    if(editingId){
-      const existing=properties.find(p=>p.id===editingId);
-      data.id=editingId;
-      data.ref=existing.type!==type?genRef(type,properties.filter(p=>p.id!==editingId)):existing.ref;
-    } else {
-      data.ref=genRef(type,properties);
-    }
-
-    const ok=await upsertProperty(data);
-    btn.disabled=false;btn.textContent='Sauvegarder';
-    if(ok){closeModal();await loadProperties();if(adminUnlocked)renderAdmin();showToast(editingId?'Bien modifié ✓':'Bien ajouté ✓');}
-  }
-
-  async function deleteProp(id){
-    if(!confirm('Supprimer ce bien définitivement ?'))return;
-    const ok=await deletePropertyDB(id);
-    if(ok){await loadProperties();renderAdmin();showToast('Bien supprimé');}
-  }
-
-  async function toggleVisible(id){
-    const p=properties.find(x=>x.id===id);
-    const ok=await updateField(id,{visible:!p.visible});
-    if(ok){await loadProperties();renderAdmin();}
-  }
-
-  async function toggleFeatured(id){
-    const p=properties.find(x=>x.id===id);
-    const ok=await updateField(id,{featured:!p.featured});
-    if(ok){await loadProperties();renderAdmin();renderPublic();}
-  }
-
-  function editProp(id){openModal(id);}
-
-  loadProperties();
-
-  function formatMoneyInput(input) {
-  let value = input.value.replace(/[^0-9]/g, "");
-  if (!value) {
-    input.value = "";
-    return;
-  }
-  input.value = "$" + Number(value).toLocaleString("en-US");
+// ── CARD CAROUSEL LOGIC ──
+function startCardCarousel(id){
+  const cc=cardCarousels[id];
+  if(!cc||cc.photos.length<=1)return;
+  stopCardCarousel(id);
+  cc.timer=setInterval(()=>{
+    cc.index=(cc.index+1)%cc.photos.length;
+    applyCardCarousel(id);
+  },4000);
+}
+function stopCardCarousel(id){
+  const cc=cardCarousels[id];
+  if(cc&&cc.timer){clearInterval(cc.timer);cc.timer=null;}
+}
+function resumeCardCarouselAfter(id,ms=20000){
+  stopCardCarousel(id);
+  cardCarousels[id]._resumeTimer=setTimeout(()=>startCardCarousel(id),ms);
+}
+function applyCardCarousel(id){
+  const cc=cardCarousels[id];
+  if(!cc)return;
+  const track=document.getElementById(`cc-track-${id}`);
+  const dots=document.querySelectorAll(`#cc-dots-${id} .card-dot`);
+  if(track)track.style.transform=`translateX(-${cc.index*100}%)`;
+  dots.forEach((d,i)=>d.classList.toggle('active',i===cc.index));
+}
+function moveCardCarousel(e,id,dir){
+  e.stopPropagation();
+  const cc=cardCarousels[id];
+  if(!cc)return;
+  cc.index=(cc.index+dir+cc.photos.length)%cc.photos.length;
+  applyCardCarousel(id);
+  resumeCardCarouselAfter(id,20000);
 }
 
-const commissionInput = document.getElementById("f-commission");
+// ── DETAIL CAROUSEL LOGIC ──
+function startDetailCarousel(){
+  stopDetailCarousel();
+  if(detailCarousel.total<=1)return;
+  detailCarousel.timer=setInterval(()=>{
+    detailCarousel.index=(detailCarousel.index+1)%detailCarousel.total;
+    applyDetailCarousel();
+  },4000);
+}
+function stopDetailCarousel(){if(detailCarousel.timer){clearInterval(detailCarousel.timer);detailCarousel.timer=null;}}
+function resumeDetailAfter(ms=20000){stopDetailCarousel();setTimeout(()=>startDetailCarousel(),ms);}
+function applyDetailCarousel(){
+  const track=document.getElementById('d-track');
+  const dots=document.querySelectorAll('#d-dots .d-carousel-dot');
+  const counter=document.getElementById('d-counter');
+  if(track)track.style.transform=`translateX(-${detailCarousel.index*100}%)`;
+  dots.forEach((d,i)=>d.classList.toggle('active',i===detailCarousel.index));
+  if(counter)counter.textContent=`${detailCarousel.index+1} / ${detailCarousel.total}`;
+}
+function moveDetailCarousel(dir){
+  detailCarousel.index=(detailCarousel.index+dir+detailCarousel.total)%detailCarousel.total;
+  applyDetailCarousel();
+  resumeDetailAfter(20000);
+}
+function goDetailCarousel(i){detailCarousel.index=i;applyDetailCarousel();resumeDetailAfter(20000);}
 
-commissionInput.addEventListener("input", function () {
-  formatMoneyInput(this);
-});
+// ── RENDER PUBLIC ──
+function renderPublic(){
+  // Stop all running card carousels before re-render
+  Object.keys(cardCarousels).forEach(id=>stopCardCarousel(id));
+  cardCarousels={};
+
+  const grid=document.getElementById('props-grid');
+  let vis=properties.filter(p=>p.visible);
+  if(currentFilter==='sale')vis=vis.filter(p=>p.type==='sale');
+  else if(currentFilter==='rent')vis=vis.filter(p=>p.type==='rent');
+  else if(currentFilter==='featured')vis=vis.filter(p=>p.featured);
+  const sorted=getSorted(vis);
+  const allVis=properties.filter(p=>p.visible);
+  document.getElementById('stat-total').textContent=allVis.length;
+  document.getElementById('stat-sale').textContent=allVis.filter(p=>p.type==='sale').length;
+  document.getElementById('stat-rent').textContent=allVis.filter(p=>p.type==='rent').length;
+  if(!sorted.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><i class="ti ti-building-skyscraper"></i><p style="font-size:0.7rem;">Aucune propriété disponible</p></div>';return;}
+
+  grid.innerHTML=sorted.map((p,i)=>{
+    const photos=p.photos&&p.photos.length?p.photos:(p.img?[p.img]:[]);
+    cardCarousels[p.id]={index:0,timer:null,photos};
+    const hasMultiple=photos.length>1;
+    return`<div class="prop-card" style="animation-delay:${i*0.07}s" onclick="openDetail(${p.id})"
+      onmouseenter="stopCardCarousel(${p.id})"
+      onmouseleave="startCardCarousel(${p.id})">
+      <div class="card-carousel" id="cc-${p.id}">
+        ${photos.length
+          ?`<div class="card-carousel-track" id="cc-track-${p.id}">${photos.map(u=>`<img src="${u}" alt="${p.name}" draggable="false">`).join('')}</div>`
+          :`<div class="card-placeholder"><i class="ti ti-building"></i></div>`}
+        <div class="prop-tags-overlay">
+          ${p.featured?'<span class="tag tag-featured">⭐ Vedette</span>':''}
+          ${isNew(p)?'<span class="tag tag-new">Nouveau</span>':''}
+          <span class="tag tag-type">${p.type==='sale'?'Vente':'Location'}</span>
+        </div>
+        ${hasMultiple?`
+          <button class="card-nav-btn card-nav-prev" onclick="moveCardCarousel(event,${p.id},-1)"><i class="ti ti-chevron-left" style="font-size:11px;"></i></button>
+          <button class="card-nav-btn card-nav-next" onclick="moveCardCarousel(event,${p.id},1)"><i class="ti ti-chevron-right" style="font-size:11px;"></i></button>
+          <div class="card-dots" id="cc-dots-${p.id}">${photos.map((_,di)=>`<div class="card-dot${di===0?' active':''}" onclick="(function(e){e.stopPropagation();cardCarousels[${p.id}].index=${di};applyCardCarousel(${p.id});resumeCardCarouselAfter(${p.id},20000);})(event)"></div>`).join('')}</div>`:''}
+        <div class="prop-ref">${p.ref}</div>
+        ${hasMultiple?`<div class="photo-count"><i class="ti ti-camera" style="font-size:10px;"></i>${photos.length}</div>`:''}
+      </div>
+      <div class="prop-body">
+        <div class="prop-title">${p.name}</div>
+        <div class="prop-location"><i class="ti ti-map-pin"></i>${p.location}</div>
+        <div class="prop-infos">
+          <div class="prop-info"><div class="info-val">${p.i1v||'—'}</div><div class="info-lbl">${p.i1l||'Pièces'}</div></div>
+          <div class="prop-info"><div class="info-val">${p.i2v||'—'}</div><div class="info-lbl">${p.i2l||'Chambres'}</div></div>
+          <div class="prop-info"><div class="info-val"><i class="ti ${parkingIcon[p.parking]||'ti-car'}" style="font-size:13px;color:var(--gold);"></i></div><div class="info-lbl">${p.parking||'—'}</div></div>
+        </div>
+        <div class="prop-divider"></div>
+        <div class="prop-bottom">
+          <div>
+            <div class="prop-price">$${p.price}</div>
+            <div class="prop-price-sub">${p.type==='rent'?'/ semaine':'Prix de vente'}</div>
+            ${p.commission?`<div class="prop-commission">Commission : $${p.commission}</div>`:''}
+          </div>
+          <button class="btn-detail" onclick="event.stopPropagation();openDetail(${p.id})">Voir <i class="ti ti-arrow-right" style="font-size:10px;"></i></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Start carousels
+  sorted.forEach(p=>{
+    if(cardCarousels[p.id]&&cardCarousels[p.id].photos.length>1)startCardCarousel(p.id);
+  });
+}
+
+// ── DETAIL ──
+function openDetail(id){
+  const p=properties.find(x=>x.id===id);
+  if(!p)return;
+  document.body.classList.add('modal-open');
+  const photos=p.photos&&p.photos.length?p.photos:(p.img?[p.img]:[]);
+  detailCarousel={index:0,timer:null,total:photos.length};
+
+  const wrap=document.getElementById('d-carousel-wrap');
+  if(!photos.length){
+    wrap.innerHTML=`<div class="d-carousel-placeholder"><i class="ti ti-building"></i></div>`;
+  } else {
+    wrap.innerHTML=`<div class="d-carousel"
+      onmouseenter="stopDetailCarousel()"
+      onmouseleave="startDetailCarousel()">
+      <div class="d-carousel-track" id="d-track">${photos.map(u=>`<img src="${u}" alt="${p.name}">`).join('')}</div>
+      ${photos.length>1?`
+        <button class="d-carousel-btn d-carousel-prev" onclick="moveDetailCarousel(-1)"><i class="ti ti-chevron-left" style="font-size:14px;"></i></button>
+        <button class="d-carousel-btn d-carousel-next" onclick="moveDetailCarousel(1)"><i class="ti ti-chevron-right" style="font-size:14px;"></i></button>
+        <div class="d-carousel-dots" id="d-dots">${photos.map((_,i)=>`<div class="d-carousel-dot${i===0?' active':''}" onclick="goDetailCarousel(${i})"></div>`).join('')}</div>
+        <div class="d-carousel-counter" id="d-counter">1 / ${photos.length}</div>`:''}
+    </div>`;
+  }
+
+  document.getElementById('d-title').textContent=p.name;
+  document.getElementById('d-loc').innerHTML=`<i class="ti ti-map-pin"></i>${p.location}`;
+  document.getElementById('d-ref').textContent=p.ref;
+  document.getElementById('d-type-badge').innerHTML=`<span class="tag tag-type">${p.property_type||'Bien'}</span>`;
+
+  const specs=[];
+  if(p.i1v)specs.push({icon:'ti-home-2',val:p.i1v,lbl:p.i1l||'Pièces'});
+  if(p.i2v)specs.push({icon:'ti-bed',val:p.i2v,lbl:p.i2l||'Chambres'});
+  if(p.bathrooms)specs.push({icon:'ti-bath',val:p.bathrooms,lbl:'Salle de bains'});
+  if(p.floors)specs.push({icon:'ti-stairs',val:p.floors,lbl:'Étage / Niveaux'});
+  if(p.offices&&p.offices!=='0')specs.push({icon:'ti-briefcase',val:p.offices,lbl:'Bureaux'});
+  if(p.parking)specs.push({icon:parkingIcon[p.parking]||'ti-car',val:'',lbl:p.parking,icon_only:true});
+  if(p.pool_type&&p.pool_type!=='Aucune')specs.push({icon:'ti-ripple',val:'',lbl:p.pool_type,icon_only:true});
+  if(p.garden)specs.push({icon:'ti-trees',val:'',lbl:'Jardin',icon_only:true});
+  if(p.helipad)specs.push({icon:'ti-helicopter',val:'',lbl:'Hélipad',icon_only:true});
+  document.getElementById('d-specs').innerHTML=specs.map(s=>`<div class="spec-item"><div class="spec-icon"><i class="ti ${s.icon}"></i></div>${!s.icon_only?`<div class="spec-val">${s.val}</div>`:''}<div class="spec-lbl">${s.lbl}</div></div>`).join('');
+
+  const allTags=p.tags||[];
+  const equips=allTags.filter(t=>PRESET_EQUIP.find(e=>e.key===t));
+  const equipSec=document.getElementById('d-equip-section');
+  if(equips.length){equipSec.style.display='block';document.getElementById('d-equip').innerHTML=equips.map(k=>{const e=PRESET_EQUIP.find(x=>x.key===k);return`<div class="equip-tag"><i class="ti ${e.icon}"></i>${e.label}</div>`;}).join('');}
+  else equipSec.style.display='none';
+
+  const ctags=allTags.filter(t=>!PRESET_EQUIP.find(e=>e.key===t));
+  const tagsSec=document.getElementById('d-tags-section');
+  if(ctags.length){tagsSec.style.display='block';document.getElementById('d-tags').innerHTML=ctags.map(t=>`<span class="custom-tag">${t}</span>`).join('');}
+  else tagsSec.style.display='none';
+
+  document.getElementById('d-desc').textContent=p.desc||'';
+  document.getElementById('d-price-lbl').textContent=p.type==='rent'?'Loyer / semaine':'Prix de vente';
+  document.getElementById('d-price').textContent=`$${p.price}`;
+  const cw=document.getElementById('d-commission-wrap');
+  if(p.commission){cw.style.display='block';document.getElementById('d-commission').textContent=`$${p.commission}`;}
+  else cw.style.display='none';
+
+  const backdrop=document.getElementById('detail-backdrop');
+  backdrop.classList.add('open');
+  backdrop.scrollTop=0;
+  if(photos.length>1)startDetailCarousel();
+}
+
+function closeDetail(){
+  stopDetailCarousel();
+  document.getElementById('detail-backdrop').classList.remove('open');
+  document.body.classList.remove('modal-open');
+}
+document.getElementById('detail-backdrop').addEventListener('click',function(e){if(e.target===this)closeDetail();});
+
+function filterProps(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderPublic();}
+function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
+
+// ── ADMIN ──
+function openAdmin(){document.getElementById('admin-overlay').classList.add('open');if(adminUnlocked){document.getElementById('pw-screen').style.display='none';document.getElementById('admin-panel').classList.add('visible');renderAdmin();}}
+function closeAdmin(){document.getElementById('admin-overlay').classList.remove('open');}
+function checkPw(){const v=document.getElementById('pw-input').value;if(v===ADMIN_PW){adminUnlocked=true;document.getElementById('pw-screen').style.display='none';document.getElementById('admin-panel').classList.add('visible');document.getElementById('pw-error').textContent='';renderAdmin();}else{document.getElementById('pw-error').textContent='Mot de passe incorrect';document.getElementById('pw-input').value='';}}
+
+function renderAdmin(){
+  const tbody=document.getElementById('admin-tbody');
+  const sorted=getSorted(properties);
+  if(!sorted.length){tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><i class="ti ti-building"></i><p style="font-size:0.7rem;">Aucun bien</p></div></td></tr>`;return;}
+  tbody.innerHTML=sorted.map(p=>`<tr>
+    <td><button class="toggle-star ${p.featured?'':'off'}" onclick="toggleFeatured(${p.id})">★</button></td>
+    <td><span class="ref-pill">${p.ref}</span></td>
+    <td><span class="prop-name-cell">${p.name}</span><br><span style="font-size:0.55rem;color:var(--white-dim);">${p.location}</span></td>
+    <td>${p.type==='sale'?'Vente':'Loc.'}</td>
+    <td style="color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:0.9rem;">$${p.price}${p.type==='rent'?'<span style="font-size:0.5rem;color:var(--white-dim);"> /sem.</span>':''}</td>
+    <td style="color:rgba(201,168,76,0.65);font-size:0.65rem;">${p.commission?'$'+p.commission:'—'}</td>
+    <td><span class="status-badge ${p.visible?'status-visible':'status-hidden'}">${p.visible?'Visible':'Masqué'}</span></td>
+    <td><div class="action-btns">
+      <button class="btn-action edit" onclick="editProp(${p.id})"><i class="ti ti-edit" style="font-size:10px;"></i> Modifier</button>
+      <button class="btn-action" onclick="toggleVisible(${p.id})"><i class="ti ti-eye${p.visible?'-off':''}" style="font-size:10px;"></i> ${p.visible?'Masquer':'Afficher'}</button>
+      <button class="btn-action del" onclick="deleteProp(${p.id})"><i class="ti ti-trash" style="font-size:10px;"></i></button>
+    </div></td>
+  </tr>`).join('');
+}
+
+// ── SUBLABEL EDIT ──
+function toggleSublabel(key){
+  const display=document.getElementById(`f-${key}-display`);
+  const input=document.getElementById(`f-${key}`);
+  if(input.style.display==='none'){input.style.display='block';input.value=display.textContent;input.focus();}
+  else saveSublabel(key);
+}
+function saveSublabel(key){
+  const display=document.getElementById(`f-${key}-display`);
+  const input=document.getElementById(`f-${key}`);
+  display.textContent=input.value||display.textContent;
+  input.style.display='none';
+}
+
+// ── FORM ──
+function initEquipCheckboxes(){
+  document.getElementById('equip-checkboxes').innerHTML=PRESET_EQUIP.map(e=>`
+    <label class="equip-check-item">
+      <input type="checkbox" id="equip-${e.key}" value="${e.key}">
+      <i class="ti ${e.icon}" style="font-size:13px;color:var(--gold);"></i>${e.label}
+    </label>`).join('');
+}
+function addPhotoInput(val=''){
+  const wrap=document.getElementById('photo-inputs');
+  if(wrap.children.length>=10)return;
+  const row=document.createElement('div');row.className='photo-input-row';
+  row.innerHTML=`<input type="text" class="form-input" placeholder="https://..." value="${val}"><button class="btn-remove-photo" onclick="this.parentElement.remove();updateAddPhotoBtn()"><i class="ti ti-x" style="font-size:11px;"></i></button>`;
+  wrap.appendChild(row);updateAddPhotoBtn();
+}
+function updateAddPhotoBtn(){const wrap=document.getElementById('photo-inputs');document.getElementById('btn-add-photo').style.display=wrap.children.length>=10?'none':'block';}
+function addCustomTag(){const input=document.getElementById('f-tag-input');const val=input.value.trim();if(!val||customTags.includes(val))return;customTags.push(val);input.value='';renderTagsPrev();}
+function removeCustomTag(tag){customTags=customTags.filter(t=>t!==tag);renderTagsPrev();}
+function renderTagsPrev(){document.getElementById('tags-preview').innerHTML=customTags.map(t=>`<span class="tag-pill">${t}<button onclick="removeCustomTag('${t}')">✕</button></span>`).join('');}
+
+document.getElementById('f-type').addEventListener('change',function(){document.getElementById('price-hint').textContent=this.value==='rent'?'Montant / semaine':'Pour la vente';});
+
+function openModal(id=null){
+  editingId=id;
+  const p=id?properties.find(x=>x.id===id):null;
+  initEquipCheckboxes();
+  document.getElementById('modal-title').textContent=id?'Modifier le bien':'Ajouter un bien';
+  document.getElementById('f-name').value=p?p.name:'';
+  document.getElementById('f-location').value=p?p.location:'';
+  document.getElementById('f-type').value=p?p.type:'sale';
+  document.getElementById('price-hint').textContent=(p?p.type:'sale')==='rent'?'Montant / semaine':'Pour la vente';
+  document.getElementById('f-property-type').value=p?p.property_type||'Villa':'Villa';
+  document.getElementById('f-price').value=p?p.price:'';
+  document.getElementById('f-commission').value=p?p.commission||'':'';
+  document.getElementById('f-i1v').value=p?p.i1v||'':'';
+  const i1l=p?p.i1l||'Pièces':'Pièces';
+  document.getElementById('f-i1l').value=i1l;document.getElementById('f-i1l-display').textContent=i1l;document.getElementById('f-i1l').style.display='none';
+  document.getElementById('f-i2v').value=p?p.i2v||'':'';
+  const i2l=p?p.i2l||'Chambres':'Chambres';
+  document.getElementById('f-i2l').value=i2l;document.getElementById('f-i2l-display').textContent=i2l;document.getElementById('f-i2l').style.display='none';
+  document.getElementById('f-bathrooms').value=p?p.bathrooms||'':'';
+  document.getElementById('f-floors').value=p?p.floors||'':'';
+  document.getElementById('f-offices').value=p?p.offices||'':'';
+  document.getElementById('f-parking').value=p?p.parking||'Garage':'Garage';
+  document.getElementById('f-pool').value=p?p.pool_type||'Aucune':'Aucune';
+  document.getElementById('f-garden').checked=p?!!p.garden:false;
+  document.getElementById('f-helipad').checked=p?!!p.helipad:false;
+  document.getElementById('f-desc').value=p?p.desc:'';
+  document.getElementById('f-featured').checked=p?p.featured:false;
+  document.getElementById('f-visible').checked=p?p.visible:true;
+  const photoWrap=document.getElementById('photo-inputs');photoWrap.innerHTML='';
+  const existingPhotos=p?(p.photos&&p.photos.length?p.photos:(p.img?[p.img]:[])):[]; 
+  existingPhotos.forEach(u=>addPhotoInput(u));
+  if(!existingPhotos.length)addPhotoInput();
+  updateAddPhotoBtn();
+  const allTags=p?p.tags||[]:[];
+  PRESET_EQUIP.forEach(e=>{const cb=document.getElementById(`equip-${e.key}`);if(cb)cb.checked=allTags.includes(e.key);});
+  customTags=allTags.filter(t=>!PRESET_EQUIP.find(e=>e.key===t));renderTagsPrev();
+
+  // Scroll to top of modal
+  const backdrop=document.getElementById('modal-backdrop');
+  backdrop.classList.add('open');
+  requestAnimationFrame(()=>backdrop.scrollTop=0);
+}
+function closeModal(){document.getElementById('modal-backdrop').classList.remove('open');editingId=null;}
+
+async function saveProp(){
+  const name=document.getElementById('f-name').value.trim();
+  const price=document.getElementById('f-price').value.trim();
+  if(!name||!price){alert('Nom et prix obligatoires');return;}
+  const btn=document.getElementById('btn-save');btn.disabled=true;btn.textContent='Sauvegarde…';
+  const type=document.getElementById('f-type').value;
+  const photos=[...document.querySelectorAll('#photo-inputs input')].map(i=>i.value.trim()).filter(Boolean);
+  const presetSelected=PRESET_EQUIP.filter(e=>document.getElementById(`equip-${e.key}`)?.checked).map(e=>e.key);
+  const allTags=[...presetSelected,...customTags];
+  const data={name,location:document.getElementById('f-location').value.trim(),type,property_type:document.getElementById('f-property-type').value,price,commission:document.getElementById('f-commission').value.trim(),
+    i1v:document.getElementById('f-i1v').value.trim()||'—',i1l:document.getElementById('f-i1l-display').textContent||'Pièces',
+    i2v:document.getElementById('f-i2v').value.trim()||'—',i2l:document.getElementById('f-i2l-display').textContent||'Chambres',
+    bathrooms:document.getElementById('f-bathrooms').value.trim(),floors:document.getElementById('f-floors').value.trim(),offices:document.getElementById('f-offices').value.trim(),
+    parking:document.getElementById('f-parking').value,pool_type:document.getElementById('f-pool').value,garden:document.getElementById('f-garden').checked,helipad:document.getElementById('f-helipad').checked,
+    desc:document.getElementById('f-desc').value.trim(),photos,tags:allTags,featured:document.getElementById('f-featured').checked,visible:document.getElementById('f-visible').checked};
+  if(editingId){const existing=properties.find(p=>p.id===editingId);data.id=editingId;data.ref=existing.type!==type?genRef(type,properties.filter(p=>p.id!==editingId)):existing.ref;}
+  else data.ref=genRef(type,properties);
+  const ok=await upsertProperty(data);
+  btn.disabled=false;btn.textContent='Sauvegarder';
+  if(ok){closeModal();await loadProperties();if(adminUnlocked)renderAdmin();showToast(editingId?'Bien modifié ✓':'Bien ajouté ✓');}
+}
+async function deleteProp(id){if(!confirm('Supprimer ce bien définitivement ?'))return;const ok=await deletePropertyDB(id);if(ok){await loadProperties();renderAdmin();showToast('Bien supprimé');}}
+async function toggleVisible(id){const p=properties.find(x=>x.id===id);const ok=await updateField(id,{visible:!p.visible});if(ok){await loadProperties();renderAdmin();}}
+async function toggleFeatured(id){const p=properties.find(x=>x.id===id);const ok=await updateField(id,{featured:!p.featured});if(ok){await loadProperties();renderAdmin();renderPublic();}}
+function editProp(id){openModal(id);}
+
+loadProperties();
 </script>
 </body>
 </html>
