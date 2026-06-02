@@ -113,6 +113,15 @@
     .empty-state{text-align:center;padding:3.5rem;color:var(--white-dim);}
     .empty-state i{font-size:2.2rem;color:rgba(201,168,76,0.12);display:block;margin-bottom:0.7rem;}
 
+    /* PAGINATION */
+    .pagination{display:flex;align-items:center;justify-content:center;gap:0.45rem;margin-top:2.5rem;flex-wrap:wrap;}
+    .pagination.hidden{display:none;}
+    .pg-btn{background:transparent;border:1px solid rgba(201,168,76,0.18);color:var(--white-dim);font-family:'Montserrat',sans-serif;font-size:0.58rem;letter-spacing:0.1em;min-width:36px;height:36px;padding:0 0.6rem;cursor:pointer;border-radius:var(--radius-xs);transition:all .2s;display:flex;align-items:center;justify-content:center;}
+    .pg-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+    .pg-btn.active{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+    .pg-btn:disabled{opacity:0.3;cursor:not-allowed;}
+    .pg-ellipsis{color:var(--white-dim);font-size:0.7rem;padding:0 0.2rem;}
+
     /* DETAIL MODAL */
     .detail-backdrop{display:none;position:fixed;inset:0;z-index:500;background:rgba(5,5,5,0.92);backdrop-filter:blur(10px);align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;}
     .detail-backdrop.open{display:flex;}
@@ -326,6 +335,7 @@
     <div class="props-grid" id="props-grid">
       <div class="loading-state" style="grid-column:1/-1;"><i class="ti ti-loader-2"></i><p style="font-size:0.7rem;">Chargement…</p></div>
     </div>
+    <div class="pagination hidden" id="pagination"></div>
   </div>
 </div>
 
