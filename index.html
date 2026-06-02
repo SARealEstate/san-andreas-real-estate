@@ -966,22 +966,23 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".prop-ref, .detail-ref-pill").forEach(el => {
     el.style.cursor = "pointer";
 
-    el.addEventListener("click", async () => {
-      const text = el.textContent.trim();
+    el.addEventListener("click", async (e) => {
+  e.stopPropagation(); // 👈 empêche l'ouverture du détail
 
-      try {
-        await navigator.clipboard.writeText(text);
+  const text = el.textContent.trim();
 
-        el.classList.add("copied");
-        setTimeout(() => el.classList.remove("copied"), 800);
+  try {
+    await navigator.clipboard.writeText(text);
 
-        showToast("✔ Copié dans le presse-papier");
+    el.classList.add("copied");
+    setTimeout(() => el.classList.remove("copied"), 800);
 
-      } catch (e) {
-        console.error("clipboard error", e);
-        showToast("❌ Erreur de copie");
-      }
-    });
+    showToast("✔ Copié dans le presse-papier");
+
+  } catch (err) {
+    console.error(err);
+  }
+});
   });
 
 });
