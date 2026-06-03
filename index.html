@@ -338,7 +338,7 @@
 </section>
 
 <div style="background:var(--black);" id="properties">
-  <div class="section">
+  <div class="section" id="props-section">
     <div class="section-header">
       <div class="section-eyebrow">Notre portefeuille</div>
       <h2 class="section-title">Propriétés disponibles</h2>
@@ -763,7 +763,7 @@ function goPage(page){
   currentPage=page;
   renderPublic();
   // Scroll doux vers la grille
-  document.getElementById('props-grid').scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('props-section').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ── DETAIL ──
