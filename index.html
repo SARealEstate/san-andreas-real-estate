@@ -560,6 +560,8 @@ const PRESET_EQUIP=[
 ];
 
 let properties=[],editingId=null,currentFilter='all',adminUnlocked=false,customTags=[];
+let currentPage=1;
+const PAGE_SIZE=9;
 
 // ── CAROUSEL STATE ──
 // cardCarousels: { propId: { index, timer, photos } }
@@ -665,9 +667,15 @@ function renderPublic(){
   document.getElementById('stat-total').textContent=allVis.length;
   document.getElementById('stat-sale').textContent=allVis.filter(p=>p.type==='sale').length;
   document.getElementById('stat-rent').textContent=allVis.filter(p=>p.type==='rent').length;
-  if(!sorted.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><i class="ti ti-building-skyscraper"></i><p style="font-size:0.7rem;">Aucune propriété disponible</p></div>';return;}
+  if(!sorted.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><i class="ti ti-building-skyscraper"></i><p style="font-size:0.7rem;">Aucune propriété disponible</p></div>';renderPagination(0,0);return;}
 
-  grid.innerHTML=sorted.map((p,i)=>{
+  // Pagination
+  const totalPages=Math.ceil(sorted.length/PAGE_SIZE);
+  if(currentPage>totalPages)currentPage=1;
+  const start=(currentPage-1)*PAGE_SIZE;
+  const paginated=sorted.slice(start,start+PAGE_SIZE);
+
+  grid.innerHTML=paginated.map((p,i)=>{
     const photos=p.photos&&p.photos.length?p.photos:(p.img?[p.img]:[]);
     cardCarousels[p.id]={index:0,timer:null,photos};
     const hasMultiple=photos.length>1;
@@ -713,9 +721,49 @@ function renderPublic(){
   }).join('');
 
   // Start carousels
-  sorted.forEach(p=>{
+  paginated.forEach(p=>{
     if(cardCarousels[p.id]&&cardCarousels[p.id].photos.length>1)startCardCarousel(p.id);
   });
+
+  renderPagination(currentPage,totalPages);
+}
+
+// ── PAGINATION ──
+function renderPagination(page,totalPages){
+  const el=document.getElementById('pagination');
+  if(!el)return;
+  if(totalPages<=1){el.classList.add('hidden');return;}
+  el.classList.remove('hidden');
+
+  let html='';
+  // Bouton précédent
+  html+=`<button class="pg-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}><i class="ti ti-chevron-left" style="font-size:13px;"></i></button>`;
+
+  // Pages numérotées avec ellipsis
+  const pages=[];
+  for(let i=1;i<=totalPages;i++){
+    if(i===1||i===totalPages||Math.abs(i-page)<=1)pages.push(i);
+    else if(pages[pages.length-1]!=='…')pages.push('…');
+  }
+  pages.forEach(p=>{
+    if(p==='…'){
+      html+=`<span class="pg-ellipsis">…</span>`;
+    } else {
+      html+=`<button class="pg-btn${p===page?' active':''}" onclick="goPage(${p})">${p}</button>`;
+    }
+  });
+
+  // Bouton suivant
+  html+=`<button class="pg-btn" onclick="goPage(${page+1})" ${page===totalPages?'disabled':''}><i class="ti ti-chevron-right" style="font-size:13px;"></i></button>`;
+
+  el.innerHTML=html;
+}
+
+function goPage(page){
+  currentPage=page;
+  renderPublic();
+  // Scroll doux vers la grille
+  document.getElementById('props-grid').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ── DETAIL ──
@@ -790,7 +838,7 @@ function closeDetail(){
 }
 document.getElementById('detail-backdrop').addEventListener('click',function(e){if(e.target===this)closeDetail();});
 
-function filterProps(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderPublic();}
+function filterProps(f,btn){currentFilter=f;currentPage=1;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderPublic();}
 function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
 
 // ── ADMIN ──
