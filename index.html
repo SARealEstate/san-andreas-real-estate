@@ -115,10 +115,14 @@
     .prop-price{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--gold);font-weight:300;line-height:1;}
     .prop-price-sub{font-size:0.56rem;color:var(--white-dim);margin-top:3px;}
     .prop-commission{font-size:0.62rem;color:rgba(201,168,76,0.65);margin-top:3px;}
-    .prop-price-original{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--white-dim);text-decoration:line-through;text-decoration-color:rgba(224,84,84,0.7);margin-bottom:1px;}
-    .prop-price-badge{display:inline-block;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;background:rgba(224,84,84,0.15);border:1px solid rgba(224,84,84,0.35);color:#e05454;padding:0.18rem 0.55rem;border-radius:50px;margin-left:6px;vertical-align:middle;}
-    .detail-price-original{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--white-dim);text-decoration:line-through;text-decoration-color:rgba(224,84,84,0.7);margin-bottom:2px;}
-    .detail-price-badge{display:inline-block;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;background:rgba(224,84,84,0.15);border:1px solid rgba(224,84,84,0.35);color:#e05454;padding:0.2rem 0.6rem;border-radius:50px;margin-left:8px;vertical-align:middle;}
+    /* PRIX BARRÉ — card */
+    .price-reduction-wrap{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.25rem;}
+    .prop-price-original{font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:rgba(245,245,240,0.35);text-decoration:line-through;text-decoration-color:rgba(224,84,84,0.55);font-weight:300;}
+    .prop-price-badge{font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;background:rgba(224,84,84,0.12);border:1px solid rgba(224,84,84,0.28);color:#e05454;padding:0.16rem 0.5rem;border-radius:50px;}
+    /* PRIX BARRÉ — détail */
+    .detail-reduction-wrap{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.3rem;}
+    .detail-price-original{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:rgba(245,245,240,0.3);text-decoration:line-through;text-decoration-color:rgba(224,84,84,0.5);font-weight:300;}
+    .detail-price-badge{font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;background:rgba(224,84,84,0.12);border:1px solid rgba(224,84,84,0.28);color:#e05454;padding:0.18rem 0.55rem;border-radius:50px;}
     .btn-detail{background:transparent;border:1px solid rgba(201,168,76,0.25);color:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.45rem 0.85rem;cursor:pointer;border-radius:var(--radius-xs);transition:all .2s;white-space:nowrap;}
     .btn-detail:hover{background:var(--gold-dim);border-color:var(--gold);}
     .loading-state{text-align:center;padding:4rem;color:var(--white-dim);}
@@ -719,7 +723,7 @@ function renderPublic(){
         <div class="prop-divider"></div>
         <div class="prop-bottom">
           <div>
-            ${p.original_price?`<div class="prop-price-original">$${p.original_price}<span class="prop-price-badge">Baissé</span></div>`:''}
+            ${p.original_price?`<div class="price-reduction-wrap"><span class="prop-price-original">$${p.original_price}</span><span class="prop-price-badge">↓ Baissé</span></div>`:''}
             <div class="prop-price">$${p.price}</div>
             <div class="prop-price-sub">${p.type==='rent'?'/ semaine':'Prix de vente'}</div>
             ${p.commission?`<div class="prop-commission">Commission : $${p.commission}</div>`:''}
@@ -833,9 +837,10 @@ function openDetail(id){
   // Prix barré
   const origWrap=document.getElementById('d-original-price-wrap');
   if(p.original_price){
-    origWrap.style.display='block';
-    origWrap.innerHTML=`<div class="detail-price-original">$${p.original_price}<span class="detail-price-badge">Prix baissé</span></div>`;
-  } else origWrap.style.display='none';
+    origWrap.style.display='flex';
+    origWrap.className='detail-reduction-wrap';
+    origWrap.innerHTML=`<span class="detail-price-original">$${p.original_price}</span><span class="detail-price-badge">↓ Prix baissé</span>`;
+  } else { origWrap.style.display='none'; origWrap.innerHTML=''; }
   document.getElementById('d-price').textContent=`$${p.price}`;
   const cw=document.getElementById('d-commission-wrap');
   if(p.commission){cw.style.display='block';document.getElementById('d-commission').textContent=`$${p.commission}`;}
