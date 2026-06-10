@@ -112,18 +112,18 @@
     .info-lbl{font-size:0.44rem;letter-spacing:0.13em;text-transform:uppercase;color:var(--white-dim);margin-top:2px;}
     .prop-divider{height:1px;background:rgba(245,245,240,0.06);margin:0.8rem 0;}
     .prop-bottom{display:flex;align-items:flex-end;justify-content:space-between;}
-    .prop-price{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--gold);font-weight:300;line-height:1;}
-    .prop-price-sub{font-size:0.56rem;color:var(--white-dim);margin-top:3px;}
-    .prop-commission{font-size:0.62rem;color:rgba(201,168,76,0.65);margin-top:3px;}
     /* PRIX EN BAISSE */
-    .price-reduction-wrap{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.18rem;}
-    .prop-price-original{font-family:'Cormorant Garamond',serif;font-size:0.88rem;color:rgba(245,245,240,0.3);position:relative;font-weight:300;white-space:nowrap;padding:0 1px;}
-    .prop-price-original::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(200,80,80,0.6);}
-    .prop-price-badge{font-size:0.42rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;color:rgba(200,100,100,0.8);white-space:nowrap;flex-shrink:0;}
-    .detail-reduction-wrap{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.3rem;}
-    .detail-price-original{font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(245,245,240,0.28);position:relative;font-weight:300;white-space:nowrap;padding:0 1px;}
-    .detail-price-original::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(200,80,80,0.5);}
-    .detail-price-badge{font-size:0.44rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;color:rgba(200,100,100,0.75);white-space:nowrap;flex-shrink:0;}
+    .tag-price-down{background:rgba(224,84,84,0.12);border:1px solid rgba(224,84,84,0.3);color:#e07878;}
+    .price-crossed-row{display:flex;align-items:center;gap:0.55rem;margin-bottom:0.15rem;}
+    .price-old{font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(245,245,240,0.3);text-decoration:line-through;text-decoration-color:rgba(220,80,80,0.5);text-decoration-thickness:1px;font-weight:300;white-space:nowrap;}
+    .price-arrow{font-size:0.65rem;color:rgba(245,245,240,0.2);}
+    .detail-price-old{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:rgba(245,245,240,0.28);text-decoration:line-through;text-decoration-color:rgba(220,80,80,0.45);text-decoration-thickness:1px;font-weight:300;white-space:nowrap;}
+    /* FORMAT PRIX */
+    .prop-price-lbl{font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--white-dim);margin-bottom:0.15rem;}
+    .prop-price-main{display:flex;align-items:baseline;gap:0.3rem;}
+    .prop-price{font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--gold);font-weight:300;line-height:1;}
+    .prop-price-freq{font-size:0.6rem;color:var(--white-dim);letter-spacing:0.05em;}
+    .prop-commission{font-size:0.58rem;color:rgba(201,168,76,0.6);margin-top:3px;}
     .btn-detail{background:transparent;border:1px solid rgba(201,168,76,0.25);color:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.45rem 0.85rem;cursor:pointer;border-radius:var(--radius-xs);transition:all .2s;white-space:nowrap;}
     .btn-detail:hover{background:var(--gold-dim);border-color:var(--gold);}
     .loading-state{text-align:center;padding:4rem;color:var(--white-dim);}
@@ -705,6 +705,7 @@ function renderPublic(){
           ${isNew(p)?'<span class="tag tag-new">Nouveau</span>':''}
           ${p.copro?'<span class="tag tag-type">Copropriété</span>':''}
           <span class="tag tag-type">${p.type==='sale'?'Vente':'Location'}</span>
+          ${p.original_price?'<span class="tag tag-price-down">Prix en baisse</span>':''}
         </div>
         ${hasMultiple?`
           <button class="card-nav-btn card-nav-prev" onclick="moveCardCarousel(event,${p.id},-1)"><i class="ti ti-chevron-left" style="font-size:11px;"></i></button>
@@ -724,10 +725,13 @@ function renderPublic(){
         <div class="prop-divider"></div>
         <div class="prop-bottom">
           <div>
-            ${p.original_price?`<div class="price-reduction-wrap"><span class="prop-price-original">$${p.original_price}</span><span class="prop-price-badge">— Prix en baisse</span></div>`:''}
-            <div class="prop-price">$${p.price}</div>
-            <div class="prop-price-sub">${p.type==='rent'?'/ semaine':'Prix de vente'}</div>
-            ${p.commission?`<div class="prop-commission">Commission : $${p.commission}</div>`:''}
+            ${p.original_price?`<div class="price-crossed-row"><span class="price-old">$${p.original_price}</span><span class="price-arrow">→</span><span style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(245,245,240,0.5);font-weight:300;">$${p.price}</span></div>`:''}
+            <div class="prop-price-lbl">${p.type==='rent'?'Loyer de':'Prix de vente'}</div>
+            <div class="prop-price-main">
+              <span class="prop-price">${p.original_price?`<span style="font-size:1.7rem;color:var(--gold);font-family:'Cormorant Garamond',serif;font-weight:300;">$${p.price}</span>`:` $${p.price}`}</span>
+              ${p.type==='rent'?`<span class="prop-price-freq">/Sem.</span>`:''}
+            </div>
+            ${p.commission?`<div class="prop-commission">Commission incluse : $${p.commission}</div>`:''}
           </div>
           <button class="btn-detail" onclick="event.stopPropagation();openDetail(${p.id})">Voir <i class="ti ti-arrow-right" style="font-size:10px;"></i></button>
         </div>
@@ -791,7 +795,7 @@ function openDetail(id){
 
   const wrap=document.getElementById('d-carousel-wrap');
   if(!photos.length){
-    wrap.innerHTML=`<div class="d-carousel-placeholder"><i class="ti ti-building"></i></div>`;
+    wrap.innerHTML=`<div style="position:relative;"><div class="d-carousel-placeholder"><i class="ti ti-building"></i></div>${p.original_price?`<div style="position:absolute;top:0.75rem;left:0.75rem;z-index:4;"><span class="tag tag-price-down">Prix en baisse</span></div>`:''}</div>`;
   } else {
     wrap.innerHTML=`<div class="d-carousel"
       onmouseenter="stopDetailCarousel()"
@@ -802,6 +806,7 @@ function openDetail(id){
         <button class="d-carousel-btn d-carousel-next" onclick="moveDetailCarousel(1)"><i class="ti ti-chevron-right" style="font-size:14px;"></i></button>
         <div class="d-carousel-dots" id="d-dots">${photos.map((_,i)=>`<div class="d-carousel-dot${i===0?' active':''}" onclick="goDetailCarousel(${i})"></div>`).join('')}</div>
         <div class="d-carousel-counter" id="d-counter">1 / ${photos.length}</div>`:''}
+      ${p.original_price?`<div style="position:absolute;top:0.75rem;left:0.75rem;z-index:4;"><span class="tag tag-price-down">Prix en baisse</span></div>`:''}
     </div>`;
   }
 
@@ -834,18 +839,31 @@ function openDetail(id){
   else tagsSec.style.display='none';
 
   document.getElementById('d-desc').textContent=p.desc||'';
-  document.getElementById('d-price-lbl').textContent=p.type==='rent'?'Loyer / semaine':'Prix de vente';
-  // Prix barré
+  // Label prix
+  document.getElementById('d-price-lbl').textContent=p.type==='rent'?'Loyer de':'Prix de vente';
+  // Prix barré + nouveau prix
   const origWrap=document.getElementById('d-original-price-wrap');
   if(p.original_price){
     origWrap.style.display='flex';
-    origWrap.className='detail-reduction-wrap';
-    origWrap.innerHTML=`<span class="detail-price-original">$${p.original_price}</span><span class="detail-price-badge">— Prix en baisse</span>`;
+    origWrap.style.alignItems='center';
+    origWrap.style.gap='0.6rem';
+    origWrap.style.marginBottom='0.25rem';
+    origWrap.innerHTML=`<span class="detail-price-old">$${p.original_price}</span><span style="font-size:0.75rem;color:rgba(245,245,240,0.2);">→</span><span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:rgba(245,245,240,0.4);font-weight:300;">$${p.price}</span>`;
   } else { origWrap.style.display='none'; origWrap.innerHTML=''; }
-  document.getElementById('d-price').textContent=`$${p.price}`;
+  // Prix principal
+  const priceEl=document.getElementById('d-price');
+  if(p.type==='rent'){
+    priceEl.innerHTML=`$${p.price} <span style="font-size:1rem;color:var(--white-dim);font-family:'Montserrat',sans-serif;font-weight:300;">/Sem.</span>`;
+  } else {
+    priceEl.textContent=`$${p.price}`;
+  }
+  // Commission
   const cw=document.getElementById('d-commission-wrap');
-  if(p.commission){cw.style.display='block';document.getElementById('d-commission').textContent=`$${p.commission}`;}
-  else cw.style.display='none';
+  if(p.commission){
+    cw.style.display='block';
+    document.getElementById('d-commission').textContent=`$${p.commission}`;
+    document.querySelector('#d-commission-wrap .detail-price-lbl').textContent='Commission incluse';
+  } else cw.style.display='none';
 
   const backdrop=document.getElementById('detail-backdrop');
   backdrop.classList.add('open');
