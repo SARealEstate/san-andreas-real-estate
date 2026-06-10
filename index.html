@@ -119,7 +119,7 @@
     .price-arrow{font-size:0.65rem;color:rgba(245,245,240,0.2);}
     .detail-price-old{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:rgba(245,245,240,0.28);text-decoration:line-through;text-decoration-color:rgba(220,80,80,0.45);text-decoration-thickness:1px;font-weight:300;white-space:nowrap;}
     /* FORMAT PRIX */
-    .prop-price-lbl{font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--white-dim);margin-bottom:0.15rem;}
+    .prop-price-lbl{font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--white-dim);margin-bottom:0.05rem;}
     .prop-price-main{display:flex;align-items:baseline;gap:0.3rem;}
     .prop-price{font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--gold);font-weight:300;line-height:1;}
     .prop-price-freq{font-size:0.6rem;color:var(--white-dim);letter-spacing:0.05em;}
@@ -396,6 +396,7 @@
         <div class="detail-loc" id="d-loc"></div>
         <span id="d-type-badge"></span>
         <span class="detail-ref-pill" id="d-ref"></span>
+        <span class="tag tag-price-down" id="d-price-down-badge" style="display:none;">Prix en baisse</span>
       </div>
       <div class="specs-section"><div class="specs-title">Caractéristiques</div><div class="specs-grid" id="d-specs"></div></div>
       <div class="equip-section" id="d-equip-section" style="display:none;"><div class="specs-title">Équipements</div><div class="equip-grid" id="d-equip"></div></div>
@@ -795,7 +796,7 @@ function openDetail(id){
 
   const wrap=document.getElementById('d-carousel-wrap');
   if(!photos.length){
-    wrap.innerHTML=`<div style="position:relative;"><div class="d-carousel-placeholder"><i class="ti ti-building"></i></div>${p.original_price?`<div style="position:absolute;top:0.75rem;left:0.75rem;z-index:4;"><span class="tag tag-price-down">Prix en baisse</span></div>`:''}</div>`;
+    wrap.innerHTML=`<div style="position:relative;"><div class="d-carousel-placeholder"><i class="ti ti-building"></i></div></div>`;
   } else {
     wrap.innerHTML=`<div class="d-carousel"
       onmouseenter="stopDetailCarousel()"
@@ -806,7 +807,7 @@ function openDetail(id){
         <button class="d-carousel-btn d-carousel-next" onclick="moveDetailCarousel(1)"><i class="ti ti-chevron-right" style="font-size:14px;"></i></button>
         <div class="d-carousel-dots" id="d-dots">${photos.map((_,i)=>`<div class="d-carousel-dot${i===0?' active':''}" onclick="goDetailCarousel(${i})"></div>`).join('')}</div>
         <div class="d-carousel-counter" id="d-counter">1 / ${photos.length}</div>`:''}
-      ${p.original_price?`<div style="position:absolute;top:0.75rem;left:0.75rem;z-index:4;"><span class="tag tag-price-down">Prix en baisse</span></div>`:''}
+      ${p.original_price?`<div style="position:absolute;top:0.75rem;left:0.75rem;z-index:4;"></div>`:''}
     </div>`;
   }
 
@@ -814,6 +815,10 @@ function openDetail(id){
   document.getElementById('d-loc').innerHTML=`<i class="ti ti-map-pin"></i>${p.location}`;
   document.getElementById('d-type-badge').innerHTML =`${isNew(p)?'<span class="tag tag-new">Nouveau</span>':''}${p.copro?'<span class="tag tag-type">Copropriété</span>':''}<span class="tag tag-type">${p.property_type||'Bien'}</span>`;
   document.getElementById('d-ref').textContent=p.ref;
+  // Badge prix en baisse après la ref
+  const priceDownBadge=document.getElementById('d-price-down-badge');
+  if(p.original_price){priceDownBadge.style.display='inline-flex';} 
+  else{priceDownBadge.style.display='none';}
 
   const specs=[];
   if(p.i1v)specs.push({icon:'ti-home-2',val:p.i1v,lbl:p.i1l||'Pièces'});
