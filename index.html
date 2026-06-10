@@ -115,6 +115,10 @@
     .prop-price{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--gold);font-weight:300;line-height:1;}
     .prop-price-sub{font-size:0.56rem;color:var(--white-dim);margin-top:3px;}
     .prop-commission{font-size:0.62rem;color:rgba(201,168,76,0.65);margin-top:3px;}
+    .prop-price-original{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--white-dim);text-decoration:line-through;text-decoration-color:rgba(224,84,84,0.7);margin-bottom:1px;}
+    .prop-price-badge{display:inline-block;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;background:rgba(224,84,84,0.15);border:1px solid rgba(224,84,84,0.35);color:#e05454;padding:0.18rem 0.55rem;border-radius:50px;margin-left:6px;vertical-align:middle;}
+    .detail-price-original{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--white-dim);text-decoration:line-through;text-decoration-color:rgba(224,84,84,0.7);margin-bottom:2px;}
+    .detail-price-badge{display:inline-block;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;background:rgba(224,84,84,0.15);border:1px solid rgba(224,84,84,0.35);color:#e05454;padding:0.2rem 0.6rem;border-radius:50px;margin-left:8px;vertical-align:middle;}
     .btn-detail{background:transparent;border:1px solid rgba(201,168,76,0.25);color:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.45rem 0.85rem;cursor:pointer;border-radius:var(--radius-xs);transition:all .2s;white-space:nowrap;}
     .btn-detail:hover{background:var(--gold-dim);border-color:var(--gold);}
     .loading-state{text-align:center;padding:4rem;color:var(--white-dim);}
@@ -395,6 +399,7 @@
       <div class="detail-price-row">
         <div>
           <div class="detail-price-lbl" id="d-price-lbl"></div>
+          <div id="d-original-price-wrap" style="display:none;"></div>
           <div class="detail-price" id="d-price"></div>
         </div>
         <div id="d-commission-wrap" style="display:none;text-align:right;">
@@ -454,6 +459,9 @@
       <div class="form-group"><label class="form-label">Prix ($)</label><input type="text" class="form-input" id="f-price" placeholder="1,250,000"><span class="form-hint" id="price-hint">Pour la vente</span></div>
       <div class="form-group"><label class="form-label">Commission agence</label><input type="text" class="form-input" id="f-commission" placeholder="ex: 5% ou $50,000"></div>
     </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Ancien prix <span style="font-size:0.5rem;color:var(--white-dim);font-weight:300;letter-spacing:0.05em;">(optionnel — affiché barré)</span></label><input type="text" class="form-input" id="f-original-price" placeholder="ex: 350,000"></div>
+      <div class="form-group"></div>
 
     <div class="form-section-title">Caractéristiques</div>
     <div class="form-row triple">
@@ -576,7 +584,7 @@ async function loadProperties(){
   renderPublic();
 }
 async function upsertProperty(p){
-  const payload={ref:p.ref,name:p.name,location:p.location,type:p.type,price:p.price,commission:p.commission,i1v:p.i1v,i1l:p.i1l,i2v:p.i2v,i2l:p.i2l,bathrooms:p.bathrooms,bathroomsl:p.bathroomsl,floors:p.floors,floorsl:p.floorsl,offices:p.offices,officesl:p.officesl,parking:p.parking,pool_type:p.pool_type,garden:p.garden,helipad:p.helipad,property_type:p.property_type,description:p.desc,img_url:p.photos&&p.photos[0]||'',photos:p.photos,featured:p.featured,copro:p.copro,visible:p.visible,tags:p.tags};
+  const payload={ref:p.ref,name:p.name,location:p.location,type:p.type,price:p.price,original_price:p.original_price||null,commission:p.commission,i1v:p.i1v,i1l:p.i1l,i2v:p.i2v,i2l:p.i2l,bathrooms:p.bathrooms,bathroomsl:p.bathroomsl,floors:p.floors,floorsl:p.floorsl,offices:p.offices,officesl:p.officesl,parking:p.parking,pool_type:p.pool_type,garden:p.garden,helipad:p.helipad,property_type:p.property_type,description:p.desc,img_url:p.photos&&p.photos[0]||'',photos:p.photos,featured:p.featured,copro:p.copro,visible:p.visible,tags:p.tags};
   if(p.id&&typeof p.id==='number')payload.id=p.id;
   const{error}=await supa.from('properties').upsert(payload);
   if(error){console.error(error);showToast('Erreur sauvegarde','error');return false;}
@@ -710,6 +718,7 @@ function renderPublic(){
         <div class="prop-divider"></div>
         <div class="prop-bottom">
           <div>
+            ${p.original_price?`<div class="prop-price-original">$${p.original_price}<span class="prop-price-badge">Baissé</span></div>`:''}
             <div class="prop-price">$${p.price}</div>
             <div class="prop-price-sub">${p.type==='rent'?'/ semaine':'Prix de vente'}</div>
             ${p.commission?`<div class="prop-commission">Commission : $${p.commission}</div>`:''}
@@ -820,6 +829,12 @@ function openDetail(id){
 
   document.getElementById('d-desc').textContent=p.desc||'';
   document.getElementById('d-price-lbl').textContent=p.type==='rent'?'Loyer / semaine':'Prix de vente';
+  // Prix barré
+  const origWrap=document.getElementById('d-original-price-wrap');
+  if(p.original_price){
+    origWrap.style.display='block';
+    origWrap.innerHTML=`<div class="detail-price-original">$${p.original_price}<span class="detail-price-badge">Prix baissé</span></div>`;
+  } else origWrap.style.display='none';
   document.getElementById('d-price').textContent=`$${p.price}`;
   const cw=document.getElementById('d-commission-wrap');
   if(p.commission){cw.style.display='block';document.getElementById('d-commission').textContent=`$${p.commission}`;}
@@ -930,6 +945,7 @@ function openModal(id=null){
   document.getElementById('price-hint').textContent=(p?p.type:'sale')==='rent'?'Montant / semaine':'Pour la vente';
   document.getElementById('f-property-type').value=p?p.property_type||'Villa':'Villa';
   document.getElementById('f-price').value=p?p.price:'';
+  document.getElementById('f-original-price').value=p?p.original_price||'':'';
   document.getElementById('f-commission').value=p?p.commission||'':'';
   document.getElementById('f-i1v').value=p?p.i1v||'':'';
   const i1l=p?p.i1l||'Pièces':'Pièces';
@@ -979,7 +995,7 @@ async function saveProp(){
   const photos=[...document.querySelectorAll('#photo-inputs input')].map(i=>i.value.trim()).filter(Boolean);
   const presetSelected=PRESET_EQUIP.filter(e=>document.getElementById(`equip-${e.key}`)?.checked).map(e=>e.key);
   const allTags=[...presetSelected,...customTags];
-  const data={name,location:document.getElementById('f-location').value.trim(),type,property_type:document.getElementById('f-property-type').value,price,commission:document.getElementById('f-commission').value.trim(),
+  const data={name,location:document.getElementById('f-location').value.trim(),type,property_type:document.getElementById('f-property-type').value,price,original_price:document.getElementById('f-original-price').value.trim()||null,commission:document.getElementById('f-commission').value.trim(),
     i1v:document.getElementById('f-i1v').value.trim()||'—',i1l:document.getElementById('f-i1l-display').textContent||'Pièces',
     i2v:document.getElementById('f-i2v').value.trim()||'—',i2l:document.getElementById('f-i2l-display').textContent||'Chambres',
     bathrooms:document.getElementById('f-bathrooms').value.trim(),bathroomsl:document.getElementById('f-bathroomsl-display').textContent||'Salles de bains',floors:document.getElementById('f-floors').value.trim(),floorsl:document.getElementById('f-floorsl-display').textContent||'Étage / Niveaux',offices:document.getElementById('f-offices').value.trim(),officesl:document.getElementById('f-officesl-display').textContent||'Bureaux',
