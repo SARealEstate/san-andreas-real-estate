@@ -556,7 +556,7 @@
 <script>
 const SUPA_URL='https://jjuysrgpthzjnyzxeqzp.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqdXlzcmdwdGh6am55enhlcXpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyMTc4NDgsImV4cCI6MjA5NDc5Mzg0OH0.16q3SfMkTpY2h1o1oQWL7rWW-wSXzkBbxYzjkmX1WeI';
-const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
+const supa=supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
 const SEVEN_DAYS=7*24*60*60*1000;
 const parkingIcon={'Garage':'ti-car-garage','Garage souterrain':'ti-car-garage','Garage/Parking commun':'ti-parking','Parking public':'ti-parking','Stationnement extérieur':'ti-ban'};
 const PRESET_EQUIP=[
@@ -889,8 +889,14 @@ function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:'s
 // ── ADMIN ──
 async function openAdmin(){
   document.getElementById('admin-overlay').classList.add('open');
-  const {data:{session}}=await supa.auth.getSession();
-  if(session){adminUnlocked=true;document.getElementById('pw-screen').style.display='none';document.getElementById('admin-panel').classList.add('visible');renderAdmin();}
+  // Sécurité : on force toujours une nouvelle connexion, jamais de session mémorisée
+  await supa.auth.signOut();
+  adminUnlocked=false;
+  document.getElementById('pw-screen').style.display='flex';
+  document.getElementById('admin-panel').classList.remove('visible');
+  document.getElementById('pw-input').value='';
+  document.getElementById('pw-email').value='';
+  document.getElementById('pw-error').textContent='';
 }
 function closeAdmin(){
   document.getElementById('admin-overlay').classList.remove('open');
